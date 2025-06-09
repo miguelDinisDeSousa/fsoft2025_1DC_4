@@ -1,0 +1,3 @@
+C:/Users/carlo/CLionProjects/fsoft2025_1DC_4/cmake-build-debug/CMakeFiles/fsoft2025_1DC_4.dir
+C:/Users/carlo/CLionProjects/fsoft2025_1DC_4/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/carlo/CLionProjects/fsoft2025_1DC_4/cmake-build-debug/CMakeFiles/rebuild_cache.dir
