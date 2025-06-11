@@ -1,0 +1,108 @@
+### CLion-specific files ###
+.idea/
+*.iml
+cmake-build-*/
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Static libraries
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# CMake build directory
+build/
+out/
+bin/
+[Bb]in/
+[Oo]bj/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+*.cmake
+*.user
+*.vcxproj*
+*.sln
+x64/
+x86/
+Win32/
+*.dir/
+*.vcxproj.user
+.vs/
+
+# QtCreator files
+*.autosave
+
+# QtCreator
+*.pro.user
+*.pro.user.*
+
+# CLion files
+.idea/
+*.iml
+
+# Visual Studio Code files
+.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# MacOS files
+.DS_Store
+
+# Test binaries
+tests/*.exe
+tests/*.out
+
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Coverage
+*.gcno
+*.gcda
+*.gcov
+
+# Documentation
+docs/html/
+docs/latex/
+
+# Package Files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
