@@ -1,5 +1,4 @@
 
-#pragma once
 #include "ChatContainer.h"
 
 class ChatsView {
