@@ -2,6 +2,9 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <cctype>
+#include <vector>
+#include <string>
 
 std::vector<std::string> Utils::split(const std::string& str, char delimiter) {
     std::vector<std::string> tokens;

@@ -25,7 +25,6 @@ typedef enum {
     FILTER_NAME,
     FILTER_ADDRESS,
     FILTER_USER,
-    FILTER_CONTENT,
     FILTER_NONE,
     FILTER_UNKNOWN = -1
 } FilterType;
