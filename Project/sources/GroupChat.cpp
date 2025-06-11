@@ -1,103 +1,51 @@
 //
-// Created by carlo on 09/06/2025.
+// Created by carlo on 31/05/2025.
 //
-#include "GroupChatContainer.h"
+
+#ifndef FSOFT2025_1DC_4_GROUP_H
+#define FSOFT2025_1DC_4_GROUP_H
+
 #include "GroupChat.h"
-#include <iostream>
-#include <cstring>
-#include "DuplicatedDataException.h"
 #include "InvalidDataException.h"
-#include "Utils.h"
+#include "DataConsistencyException.h"
 
-void GroupChatContainer::addGroup(Group& group) {
-    if (strlen(group.getName()) < 3) {
-        throw InvalidDataException("Não é possível criar grupo: o nome deve ter pelo menos 3 caracteres.");
-    }
 
-    if (!isGroupUnique(group)) {
-        throw DuplicatedDataException("Já existe um grupo com o nome fornecido.");
-    }
-
-    groups.push_back(group);
+Group::Group(const char* name, unsigned int& nr_participants) {
+    setName(name);
+    setNrParticipants(nr_participants);
 }
 
-int GroupChatContainer::removeGroup(Group& group, FilterType filter) {
-    if (groups.empty()) {
-        return 0;
-    }
-
-    if (filter != FILTER_NAME) {
-        return 0;
-    }
-
-    int removed = 0;
-    for (auto it = groups.begin(); it != groups.end(); ) {
-        switch (filter) {
-            case FILTER_NAME:
-                if (strcmp(it->getName(), group.getName()) == 0) {
-                    group = *it;
-                    it = groups.erase(it);
-                    removed++;
-                } else {
-                    ++it;
-                }
-                break;
-        }
-    }
-
-    return removed;
+// Getters
+const char* Group::getName() const {
+    return this->name;
 }
 
-void GroupChatContainer::listGroups() {
-    if (groups.empty()) {
-        std::cout << "Não existem grupos registados.\n";
-        return;
-    }
-
-    for (const auto& group : groups) {
-        std::cout << "Grupo: " << group.getName()
-                  << " | Nº Participantes: " << group.getNrParticipants() << std::endl;
-    }
+unsigned int Group::getNrParticipants() const {
+    return this->nr_participants;
 }
 
-bool GroupChatContainer::isGroupUnique(Group& group) {
-    for (const auto& g : groups) {
-        if (strcmp(g.getName(), group.getName()) == 0) {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool GroupChatContainer::isListEmpty() {
-    return groups.empty();
-}
-
-std::list<Group>& GroupChatContainer::getGroupList() {
-    return groups;
-}
-
-bool GroupChatContainer::existsGroupWithName(const char* groupName) {
-    if (groups.empty() || strlen(groupName) == 0) {
-        return false;
+// Setters
+void Group::setName(const char* name) {
+    if (!name) {
+        throw InvalidDataException("Invalid pointer to name.");
     }
 
-    for (auto& g : groups) {
-        if (strcmp(g.getName(), groupName) == 0) {
-            std::cout << "\nGrupo encontrado com nome: " << groupName << std::endl;
-            return true;
-        }
+    size_t len = strlen(name);
+    if (len < 3 || len > GROUP_MAX_NAME_LEN) {
+        throw DataConsistencyException("Group name must be between 3 and 64 characters.");
     }
 
-    return false;
+    strncpy(this->name, name, GROUP_MAX_NAME_LEN);
+    this->name[GROUP_MAX_NAME_LEN - 1] = '\0';
 }
 
-Group& GroupChatContainer::getGroupByName(const char* groupName) {
-    for (auto& g : groups) {
-        if (strcmp(g.getName(), groupName) == 0) {
-            return g;
-        }
+void Group::setNrParticipants(unsigned int& count) {
+    if (count < 2) {
+        throw DataConsistencyException("A group must have at least 2 participants.");
     }
 
-    throw InvalidDataException("Não foi possível encontrar o grupo com o nome fornecido.");
+    this->nr_participants = count;
 }
+
+
+#endif //FSOFT2025_1DC_4_GROUP_H

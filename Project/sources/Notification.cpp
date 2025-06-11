@@ -30,6 +30,10 @@ bool Notification::isRead() const {
     return this->read;
 }
 
+Group Notification::getGroup() const {
+    return group;
+}
+
 // Setters
 void Notification::setId(unsigned int& id) {
     this->id = id;
@@ -67,3 +71,6 @@ void Notification::setRead(bool read) {
     this->read = read;
 }
 
+void Notification::setGroup(const Group& g) {
+    group = g;
+}

@@ -7,6 +7,7 @@
 
 #include <list>
 #include "GroupChat.h"
+#include "Utils.h" // para FilterType
 
 class GroupChatContainer {
 private:
@@ -15,14 +16,14 @@ private:
 
 public:
     void addGroup(Group&);
-    int removeGroup(Group&, const char* groupName);
+    int removeGroup(Group&, FilterType filter);
     void listGroups();
-    bool isGroupUnique(const char* groupName);
+    bool isGroupUnique(Group&);
     bool isListEmpty();
     std::list<Group>& getGroupList();
     bool existsGroupWithName(const char* groupName);
     Group& getGroupByName(const char* groupName);
 };
 
-
 #endif //FSOFT2025_1DC_4_GROUPCHATCONTAINER_H
+
