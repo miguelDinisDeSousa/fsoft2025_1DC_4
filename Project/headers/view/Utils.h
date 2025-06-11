@@ -30,6 +30,11 @@ namespace Utils {
     double getDouble(const char*);
     void clearOutput();
     void getCurrentDate(unsigned int&, unsigned int&, unsigned int&);
+    static std::vector<std::string> split(const std::string& str, char delimiter);
+    static void saveToFile(const std::string& filename, const std::string& data);
+    static std::string readFromFile(const std::string& filename);
+    static bool fileExists(const std::string& filename);
+    static std::string trim(const std::string& str);
 }
 
 #endif
