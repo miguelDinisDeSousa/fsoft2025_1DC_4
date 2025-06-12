@@ -88,11 +88,11 @@ bool NotificationContainer::isNotificationUnique(Notification& notification) {
     return true;
 }
 
-bool NotificationContainer::isListEmpty() {
+bool NotificationContainer::isListEmpty() const {
     return notifications.empty();
 }
 
-std::list<Notification>& NotificationContainer::getNotificationList() {
+const std::list<Notification>& NotificationContainer::getNotificationList() const {
     return notifications;
 }
 

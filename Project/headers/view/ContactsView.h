@@ -1,26 +1,16 @@
-#ifndef CONTACTS_VIEW_H
-#define CONTACTS_VIEW_H
+#ifndef CONTACTSVIEW_H
+#define CONTACTSVIEW_H
 
-#include "ContactContainer.h"
-#include <string>
+#include <iostream>
+#include <list>
+#include "Contact.h"
+#include "Utils.h"
 
 class ContactsView {
-private:
-    const ContactContainer& contacts;
-    int currentPage = 0;
-    const int CONTACTS_PER_PAGE = 10;
 public:
-    explicit ContactsView(const ContactContainer& contacts);
-    void contactMenu() const;
-    void printContacts() const;
-    std::string handleInput(const std::string& input);
-    Chat findContact(const std::string& query) const;
-    
-    // Navigation
-    void nextPage();
-    void prevPage();
-    void firstPage();
-    void lastPage();
+    Contact getContact();
+    void printContacts(const std::list<Contact>& contacts) const;
+    Contact findContactByName(const std::list<Contact>& contacts, const char* query) const;
 };
 
-#endif // CONTACTS_VIEW_H
+#endif // CONTACTSVIEW_H

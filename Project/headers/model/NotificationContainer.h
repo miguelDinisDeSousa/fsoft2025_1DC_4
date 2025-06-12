@@ -20,8 +20,8 @@ public:
     int removeNotification(Notification&, FilterType filter);
     void listNotifications();
     bool isNotificationUnique(Notification&);
-    bool isListEmpty();
-    std::list<Notification>& getNotificationList();
+    bool isListEmpty() const;
+    const std::list<Notification>& getNotificationList() const;
     bool existsNotificationWithID(unsigned int&);
     Notification& getNotificationByID(unsigned int&);
     std::list<Notification> getNotificationsByGroupName(const char* groupName);

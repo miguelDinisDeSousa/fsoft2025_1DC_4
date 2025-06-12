@@ -1,67 +1,223 @@
-
 #include "Controller.h"
-#include "Exceptions.h"
+#include "InvalidDataException.h"
+#include "DuplicatedDataException.h"
+#include "Utils.h"
+#include <iostream>
+#include <cstring>
 
-void Controller::runChat(const std::string& chatId) {
-    Chat chat = model.getChatContainer().getChat(chatId);
-    ChatView view(chat);
+using namespace std;
+using namespace Utils;
+
+Controller::Controller(App& app) : app(app) {}
+
+void Controller::setApp(App& newApp) {
+    this->app = newApp;
+}
+
+void Controller::run() {
+    bool isAdmin = false;
+    int option = -1;
 
     while (true) {
-        view.displayChat();
-        std::string input = view.getMessageInput();
+        Utils::clearOutput();
+        option = view.AppMenu(isAdmin);
 
-        if (input == "b") {
-            break;
-        } else if (input == "s") {
-            runChatSettings(chatId);
-        } else if (input.rfind("d ", 0) == 0) {
-            try {
-                std::string messageId = input.substr(2);
-                chat.deleteMessage(messageId, currentUser);
-                model.saveChat(chat);
-            } catch (const std::exception& e) {
-                showError(e.what());
+        if (!isAdmin) {
+            switch (option) {
+                case 1: {
+                    char* passwordInput = nullptr;
+                    try {
+                        Utils::clearOutput();
+                        Utils::getString("\nEnter admin password", passwordInput, 5);
+
+                        if (strcmp(passwordInput, "admin123") == 0) {
+                            isAdmin = true;
+                            Utils::clearOutput();
+                            std::cout << "\nLogin successful!\n";
+                        } else {
+                            Utils::clearOutput();
+                            std::cout << "\nIncorrect password.\n";
+                        }
+
+                        delete[] passwordInput;
+                    } catch (...) {
+                        delete[] passwordInput;
+                        Utils::clearOutput();
+                        std::cout << "\nLogin error.\n";
+                    }
+                    break;
+                }
+                case 0:
+                    return;
             }
-        } else if (!input.empty()) {
-            try {
-                Message msg(input, currentUser, chat.getType());
-                chat.sendMessage(msg);
-                model.saveChat(chat);
-            } catch (const std::exception& e) {
-                showError(e.what());
+        } else {
+            switch (option) {
+                case 1:
+                    Utils::clearOutput();
+                    runAdmin();
+                    break;
+                case 2:
+                    Utils::clearOutput();
+                    runContacts();
+                    break;
+                case 3:
+                    Utils::clearOutput();
+                    runChats();
+                    break;
+                case 4:
+                    Utils::clearOutput();
+                    runMessages();
+                    break;
+                case 5:
+                    Utils::clearOutput();
+                    runNotifications();
+                    break;
+                case 6:
+                    isAdmin = false;
+                    Utils::clearOutput();
+                    std::cout << "\nLogged out.\n";
+                    break;
+                case 0:
+                    return;
+                default:
+                    Utils::clearOutput();
+                    std::cout << "\nInvalid option.\n";
+                    break;
             }
         }
     }
 }
 
-void Controller::runChatSettings(const std::string& chatId) {
-    Chat chat = model.getChatContainer().getChat(chatId);
-    ChatSettingsView view(chat);
-
-    while (true) {
-        view.displaySettings();
-        std::string input = getInput();
-
-        if (input == "b") {
-            break;
-        } else if (input == "m") {
-            returnToMain();
-        } else if (std::isdigit(input[0])) {
-            try {
-                std::string memberId = view.getSelectedMemberId();
-                chat.removeMember(memberId);
-                model.saveChat(chat);
-                showMessage("Member removed");
-            } catch (const std::exception& e) {
-                showError(e.what());
+void Controller::runContacts() {
+    ContactContainer& container = app.getContactContainer();
+    int option;
+    while ((option = view.ContactMenu()) != 0) {
+        switch (option) {
+            case 1: {
+                Contact contact = contactsView.getContact();
+                container.addContact(contact);
+                break;
             }
-        } else if (input == "n") {
-            std::string newName = getInput("Enter new group name: ");
-            chat.setName(newName);
-            model.saveChat(chat);
-            showMessage("Group name updated");
-        } else {
-            view.handleInput(input);
+            case 2: {
+                Contact contact = contactsView.getContact();
+                container.removeContact(contact, FILTER_ID);
+                break;
+            }
+            case 3: {
+                container.listContacts();
+                std::cout << "\nPress Enter to continue...";
+                std::cin.ignore();
+                std::cin.get();
+                break;
+            }
+            default:
+                break;
+        }
+    }
+}
+
+void Controller::runAdmin() {
+    int option;
+    while ((option = view.AdminMenu(false)) != 0) {
+        switch (option) {
+            case 1:
+                adminView.createAdmin(app.getAdminContainer());
+                break;
+            case 2:
+                adminView.removeUser(app.getAdminContainer());
+                break;
+            case 3:
+                adminView.listUsers(app.getAdminContainer());
+                std::cout << "\nPress Enter to continue...";
+                std::cin.ignore();
+                std::cin.get();
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+void Controller::runChats() {
+    GroupChatContainer& container = app.getGroupChatContainer();
+    int option;
+    while ((option = view.GroupChatMenu()) != 0) {
+        switch (option) {
+            case 1: {
+                Group group = groupChatView.getGroup();
+                container.addGroup(group);
+                break;
+            }
+            case 2: {
+                Group group = groupChatView.getGroup();
+                container.removeGroup(group, FILTER_NAME);
+                break;
+            }
+            case 3: {
+                container.listGroups();
+                std::cout << "\nPress Enter to continue...";
+                std::cin.ignore();
+                std::cin.get();
+                break;
+            }
+            default:
+                break;
+        }
+    }
+}
+
+void Controller::runMessages() {
+    MessageContainer& container = app.getMessageContainer();
+    int option;
+    while ((option = view.MessageMenu()) != 0) {
+        switch (option) {
+            case 1: {
+                Message message = messageView.getMessageInput();
+                container.addMessage(message);
+                break;
+            }
+            case 2: {
+                Message message = messageView.getMessageInput();
+                container.removeMessage(message, FILTER_ID);
+                break;
+            }
+            case 3: {
+                container.listMessages();
+                std::cout << "\nPress Enter to continue...";
+                std::cin.ignore();
+                std::cin.get();
+                break;
+            }
+            default:
+                break;
+        }
+    }
+}
+
+void Controller::runNotifications() {
+    NotificationContainer& container = app.getNotificationContainer();
+    int option;
+    while ((option = view.NotificationMenu()) != 0) {
+        switch (option) {
+            case 1: {
+                Notification notification = notificationsView.getNotification();
+                container.addNotification(notification);
+                break;
+            }
+            case 2: {
+                Notification notification = notificationsView.getNotification();
+                container.removeNotification(notification, FILTER_ID);
+                break;
+            }
+            case 3: {
+                container.listNotifications();
+                std::cout << "\nPress Enter to continue...";
+                std::cin.ignore();
+                std::cin.get();
+                break;
+            }
+            default:
+                break;
         }
     }
 }

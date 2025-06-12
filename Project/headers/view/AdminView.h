@@ -1,16 +1,20 @@
-#ifndef ADMIN_VIEW_H
-#define ADMIN_VIEW_H
+#ifndef FSOFT2025_1DC_4_ADMINVIEW_H
+#define FSOFT2025_1DC_4_ADMINVIEW_H
 
+#include <list>
 #include "Administrator.h"
-#include <string>
+#include "Contact.h"
+#include "GroupChat.h"
+#include "AdministratorContainer.h"
 
 class AdminView {
-private:
-    Administrator& admin;
 public:
-    explicit AdminView(Administrator& admin);
-    void adminMenu() const;
-    std::string getInput() const;
+    void displayProfile(const Administrator& admin) const;
+    void displayContacts(const std::list<Contact>& contacts) const;
+    void displayGroups(const std::list<Group>& groups) const;
+    void createAdmin(AdministratorContainer& container);
+    void removeUser(AdministratorContainer& container);
+    void listUsers(const AdministratorContainer& container) const;
 };
 
-#endif // ADMIN_VIEW_H
+#endif // FSOFT2025_1DC_4_ADMINVIEW_H

@@ -6,9 +6,21 @@ void MessageView::displayHeader(const std::string& chatName) const {
     std::cout << "Type your message below:\n";
 }
 
-std::string MessageView::getMessageInput() const {
-    std::cout << "> ";
-    std::string input;
-    std::getline(std::cin, input);
-    return input;
+Message MessageView::getMessageInput() const {
+    unsigned int id = Utils::getNumber("Enter message ID");
+    unsigned int sender = Utils::getNumber("Enter sender ID");
+    unsigned int receiver = Utils::getNumber("Enter receiver ID");
+
+    char* content;
+    Utils::getString("Enter message content", content, 1);
+
+    char* date;
+    Utils::getString("Enter message date", date, 4);  // ou usar Utils::getCurrentDate() se preferires gerar a data automaticamente
+
+    Message msg(id, content, date, sender, receiver);
+
+    delete[] content;
+    delete[] date;
+
+    return msg;
 }

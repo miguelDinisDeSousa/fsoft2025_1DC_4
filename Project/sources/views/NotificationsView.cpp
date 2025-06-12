@@ -1,48 +1,50 @@
 #include "NotificationsView.h"
 #include <iostream>
-#include <ctime>
 
-NotificationsView::NotificationsView(const NotificationContainer& notifications) 
-    : notifications(notifications) {}
-
-void NotificationsView::chatMenu() const {
-    printNotifications();
-}
-
-void NotificationsView::printNotifications() const {
-    std::cout << "#### Notifications (max: 300) ####\n\n";
-    
-    auto notificationList = notifications.getNotifications();
-    int start = currentPage * NOTIFICATIONS_PER_PAGE;
-    int end = std::min(start + NOTIFICATIONS_PER_PAGE, static_cast<int>(notificationList.size()));
-    
-    for (int i = start; i < end; i++) {
-        const auto& notification = notificationList[i];
-        std::time_t t = notification.getMessage().getDate();
-        std::tm* now = std::localtime(&t);
-        char timeBuf[20];
-        std::strftime(timeBuf, sizeof(timeBuf), "%d/%m - %Hh%M", now);
-        
-        std::cout << (i - start) << " - " << notification.getMessage().getSender().getName()
-                  << " sent a message in " << notification.getChat().getName()
-                  << " (" << timeBuf << ")\n";
+void NotificationsView::printNotifications(const NotificationContainer& container) const {
+    if (container.isListEmpty()) {
+        std::cout << "No notifications to show.\n";
+        return;
     }
-    
-    std::cout << "\nPick one option:\n";
-    std::cout << "m - Go back to main menu\n";
-    std::cout << "0-9 - Select chat\n";
-    std::cout << "Enter - Go to next 10 notifications\n";
-    std::cout << "Tab - Go to previous 10 notifications\n";
-    std::cout << "5 - Go to start of the list\n";
-    std::cout << "6 - Go to end of the list\n";
+
+    for (const auto& notification : container.getNotificationList()) {
+        std::cout << "ID: " << notification.getId() << "\n";
+        std::cout << "Message: " << notification.getMessage() << "\n";
+        std::cout << "Date: " << notification.getDate() << "\n";
+        std::cout << "Status: " << (notification.isRead() ? "Read" : "Unread") << "\n\n";
+    }
 }
 
-std::string NotificationsView::handleInput(const std::string& input) {
-    if (input == "\n") nextPage();
-    else if (input == "\t") prevPage();
-    else if (input == "5") firstPage();
-    else if (input == "6") lastPage();
-    return input;
+void NotificationsView::printUnreadNotifications(const NotificationContainer& container) const {
+    for (const auto& notification : container.getNotificationList()) {
+        if (!notification.isRead()) {
+            std::cout << "ID: " << notification.getId() << "\n";
+            std::cout << "Message: " << notification.getMessage() << "\n";
+            std::cout << "Date: " << notification.getDate() << "\n";
+            std::cout << "Status: Unread\n\n";
+        }
+    }
 }
 
-// Navigation methods (similar to ContactsView)
+Notification NotificationsView::getNotification() const {
+    unsigned int id = Utils::getNumber("Enter notification ID");
+
+    char* message;
+    Utils::getString("Enter message", message, 1);
+
+    char* date;
+    Utils::getString("Enter date", date, 4);
+
+    bool read;
+    std::cout << "Is the notification read? (1 for yes, 0 for no): ";
+    std::cin >> read;
+    std::cin.ignore();  // limpar o buffer
+
+    Notification n(id, message, date, read);
+
+    delete[] message;
+    delete[] date;
+
+    return n;
+}
+
