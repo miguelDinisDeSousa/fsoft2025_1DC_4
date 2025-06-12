@@ -1,7 +1,7 @@
 #include "MessageView.h"
 #include <iostream>
 
-void MessageView::displayHeader(const std::string& chatName) const {
+void MessageView::display(const std::string& chatName) const {
     std::cout << "#### " << chatName << " ####\n\n";
     std::cout << "Type your message below:\n";
 }

@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <cstring>
+#include "MessageContainer.h"
 
 #define GROUP_MAX_NAME_LEN 64
 
@@ -14,6 +15,7 @@ class Group {
 private:
     char name[GROUP_MAX_NAME_LEN] = {'\0'};
     unsigned int nr_participants = 0;
+    MessageContainer messages;
 
 public:
     Group() = default;
@@ -22,10 +24,12 @@ public:
     // Getters
     const char* getName() const;
     unsigned int getNrParticipants() const;
+    MessageContainer getMessages();
 
     // Setters
     void setName(const char*);
     void setNrParticipants(unsigned int&);
+    void setMessages(MessageContainer messages);
 };
 
 

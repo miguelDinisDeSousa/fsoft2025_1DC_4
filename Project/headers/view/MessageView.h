@@ -5,7 +5,7 @@
 
 class MessageView {
 public:
-    void displayHeader(const std::string& chatName) const;
+    void display(const std::string& chatName) const;
     std::string getMessageInput() const;
 };
 

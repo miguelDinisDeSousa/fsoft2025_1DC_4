@@ -1,6 +1,7 @@
 #include "NotificationsView.h"
 #include <iostream>
 #include <ctime>
+#define NOTIFICATIONS_PER_PAGE 10
 
 NotificationsView::NotificationsView(const NotificationContainer& notifications) 
     : notifications(notifications) {}
@@ -12,7 +13,7 @@ void NotificationsView::chatMenu() const {
 void NotificationsView::printNotifications() const {
     std::cout << "#### Notifications (max: 300) ####\n\n";
     
-    auto notificationList = notifications.getNotifications();
+    auto notificationList = notifications.getNotificationList();
     int start = currentPage * NOTIFICATIONS_PER_PAGE;
     int end = std::min(start + NOTIFICATIONS_PER_PAGE, static_cast<int>(notificationList.size()));
     

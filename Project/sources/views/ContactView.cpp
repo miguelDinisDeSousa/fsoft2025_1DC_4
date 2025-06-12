@@ -1,7 +1,7 @@
 #include "ContactView.h"
 #include <iostream>
 
-ContactView::ContactView(const Contact& contact, const InteractionHistoryContainer& interactions) 
+ContactView::ContactView(const Contact& contact, const InteractionHistory& interactions)
     : contact(contact), interactions(interactions) {}
 
 void ContactView::interactionsMenu() const {

@@ -10,9 +10,10 @@
 #include "DataConsistencyException.h"
 
 
-Group::Group(const char* name, unsigned int& nr_participants) {
+Group::Group(const char* name, unsigned int& nr_participants, MessageContainer messages) {
     setName(name);
     setNrParticipants(nr_participants);
+    setMessages(messages);
 }
 
 // Getters
@@ -22,6 +23,10 @@ const char* Group::getName() const {
 
 unsigned int Group::getNrParticipants() const {
     return this->nr_participants;
+}
+
+MessageContainer Group::getMessages() const {
+    return this->messages;
 }
 
 // Setters
@@ -46,6 +51,12 @@ void Group::setNrParticipants(unsigned int& count) {
 
     this->nr_participants = count;
 }
+
+void Group::setMessages(MessageContainer messages) {
+
+    this->messages = messages;
+}
+
 
 
 #endif //FSOFT2025_1DC_4_GROUP_H

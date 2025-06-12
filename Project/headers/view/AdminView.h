@@ -9,7 +9,7 @@ private:
     Administrator& admin;
 public:
     explicit AdminView(Administrator& admin);
-    void adminMenu() const;
+    void display() const;
     std::string getInput() const;
 };
 
