@@ -149,10 +149,10 @@ void Controller::runChats() {
             return;
         } else if (option == 'a') {
 
-        } else if (option == '\t' && currentPage >= 10) {
+        } else if (option == '-' && currentPage >= 10) {
             currentPage -= 10;
 
-        } else if (option == '\n') {
+        } else if (option == '+') {
             currentPage += 10;
 
         } else if (option == 's') {
@@ -162,9 +162,9 @@ void Controller::runChats() {
             currentPage = container.getGroupList().size() - 1 - 10;
 
         } else if (option == 'f') {
-            std::cout << "Write Group name: \n";
+
             char* chatName = nullptr;
-            Utils::getString("Enter admin password", chatName, 0);
+            Utils::getString("Write Group name:", chatName, 0);
             if (container.existsGroupWithName(chatName)) {
                 Group searchedGroup = container.getGroupByName(chatName);
                 //TODO - JESS Add GroupChat view here

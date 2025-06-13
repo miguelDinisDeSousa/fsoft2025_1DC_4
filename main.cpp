@@ -39,7 +39,28 @@ void addBaseData(App& app) {
     contactContainer.addContact(c2);
 
     // === Criar grupo com membros e adicionar ===
-    unsigned int groupParticipants = 2;
+
+
+
+     unsigned int groupParticipants = 2;
+     std::string baseName = "Team ";
+
+    for (int i = 1; i <= 100; i++) {
+        // Create group name with index
+        std::string groupName = baseName + std::to_string(i);
+
+        // Create and populate the group
+        Group group((groupName.c_str()), groupParticipants);
+        group.addMember(c1);
+        group.addMember(c2);
+
+        // Add to admin and container
+        admin1.addGroup(group);
+        groupChatContainer.addGroup(group);
+
+    }
+
+
     Group group("Equipa Técnica", groupParticipants);
     group.addMember(c1);
     group.addMember(c2);
