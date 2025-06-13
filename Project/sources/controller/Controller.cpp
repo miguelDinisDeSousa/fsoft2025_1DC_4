@@ -4,6 +4,7 @@
 #include "Utils.h"
 #include <iostream>
 #include <cstring>
+#include <vector>
 
 using namespace std;
 using namespace Utils;
@@ -140,28 +141,43 @@ void Controller::runAdmin() {
 
 void Controller::runChats() {
     GroupChatContainer& container = app.getGroupChatContainer();
-    int option;
-    while ((option = view.GroupChatMenu()) != 0) {
-        switch (option) {
-            case 1: {
-                Group group = groupChatView.getGroup();
-                container.addGroup(group);
-                break;
+    int currentPage = 0;
+    while (true) {
+        char option = groupChatView.displayChats(container, currentPage);
+
+        if (option == 'm') {
+            return;
+        } else if (option == 'a') {
+
+        } else if (option == '\t' && currentPage >= 10) {
+            currentPage -= 10;
+
+        } else if (option == '\n') {
+            currentPage += 10;
+
+        } else if (option == 's') {
+            currentPage = 0;
+
+        } else if (option == 'S' && container.getGroupList().size() > 10) {
+            currentPage = container.getGroupList().size() - 1 - 10;
+
+        } else if (option == 'f') {
+            std::cout << "Write Group name: \n";
+            char* chatName = nullptr;
+            Utils::getString("Enter admin password", chatName, 0);
+            if (container.existsGroupWithName(chatName)) {
+                Group searchedGroup = container.getGroupByName(chatName);
+                //TODO - JESS Add GroupChat view here
+            } else {
+                std::cout << "No Group by that name \n";
             }
-            case 2: {
-                Group group = groupChatView.getGroup();
-                container.removeGroup(group, FILTER_NAME);
-                break;
-            }
-            case 3: {
-                container.listGroups();
-                std::cout << "\nPress Enter to continue...";
-                std::cin.ignore();
-                std::cin.get();
-                break;
-            }
-            default:
-                break;
+
+
+        } else if ((int)option >= '0' && (int)option <= '9') {
+            int optionInt = (int) option - '0';
+            std::vector<Group> chats(container.getGroupList().begin(), container.getGroupList().end());
+            Group selectedGroup = chats[optionInt + currentPage];
+            //TODO - JESS Add GroupChat view here
         }
     }
 }
