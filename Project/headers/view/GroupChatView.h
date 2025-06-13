@@ -1,12 +1,17 @@
+#ifndef GROUPCHATVIEW_H
+#define GROUPCHATVIEW_H
 
+#include <iostream>
+#include <list>
 #include "GroupChat.h"
 
 class GroupChatView {
-private:
-    GroupChat currentChat;
-
 public:
-    GroupChatView(const GroupChat& chat);
-    void displayChat() const;
-    void handleUserInput(const std::string& input);
+    void displayGroups(const std::list<Group>& groups) const;
+    void displayGroupMembers(const Group& group) const;
+    Group getGroup() const;
+
 };
+
+#endif // GROUPCHATVIEW_H
+

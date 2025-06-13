@@ -1,63 +1,48 @@
 #include "ContactsView.h"
+#include "Utils.h"
 #include <iostream>
-#include <algorithm>
+#include <iomanip>
 
-ContactsView::ContactsView(const ContactContainer& contacts) : contacts(contacts) {}
+using namespace std;
+using namespace Utils;
 
-void ContactsView::contactMenu() const {
-    printContacts();
+Contact ContactsView::getContact() {
+    char* name = nullptr;
+    char* phone = nullptr;
+    char* email = nullptr;
+
+    getString("Contact name (min 3 chars)", name, 3);
+    getString("Phone number (min 5 chars)", phone, 5);
+    getString("Email (min 5 chars)", email, 5);
+
+    static unsigned int idCounter = 1;
+    unsigned int id = idCounter++;
+
+    Contact contact(id, name, phone, email);
+
+    delete[] name;
+    delete[] phone;
+    delete[] email;
+
+    return contact;
 }
 
-void ContactsView::printContacts() const {
-    std::cout << "### Contacts Menu ###\n\n";
-    
-    auto contactList = contacts.getContacts();
-    int start = currentPage * CONTACTS_PER_PAGE;
-    int end = std::min(start + CONTACTS_PER_PAGE, static_cast<int>(contactList.size()));
-    
-    for (int i = start; i < end; i++) {
-        std::cout << (i - start) << " - " << contactList[i].getName() << "\n";
+void ContactsView::printContacts(const list<Contact>& contacts) const {
+    if (contacts.empty()) {
+        cout << "\nNo contacts available.\n" << endl;
+        return;
     }
-    
-    std::cout << "\nPick one option:\n";
-    std::cout << "m - Go back to main menu\n";
-    std::cout << "f - Search Contact\n";
-    std::cout << "a - Add contact\n";
-    std::cout << "0-9 - Select contact\n";
-    std::cout << "Enter - Go to next 10 contacts\n";
-    std::cout << "Tab - Go to previous 10 contacts\n";
-    std::cout << "5 - Go to start of the list\n";
-    std::cout << "6 - Go to end of the list\n";
+
+    cout << left << setw(6) << "ID" << setw(20) << "Name" << setw(20) << "Phone" << setw(30) << "Email" << endl;
+    cout << string(76, '-') << endl;
+
+    for (const auto& contact : contacts) {
+        cout << left << setw(6) << contact.getId()
+             << setw(20) << contact.getName()
+             << setw(20) << contact.getPhone()
+             << setw(30) << contact.getEmail() << endl;
+    }
+
+    cout << endl;
 }
 
-std::string ContactsView::handleInput(const std::string& input) {
-    if (input == "\n") nextPage();
-    else if (input == "\t") prevPage();
-    else if (input == "5") firstPage();
-    else if (input == "6") lastPage();
-    return input;
-}
-
-Chat ContactsView::findContact(const std::string& query) const {
-    // Implementation depends on your Chat search functionality
-    throw NotFoundEntityException("Contact not found: " + query);
-}
-
-// Navigation methods
-void ContactsView::nextPage() {
-    int totalPages = (contacts.getContacts().size() + CONTACTS_PER_PAGE - 1) / CONTACTS_PER_PAGE;
-    if (currentPage < totalPages - 1) currentPage++;
-}
-
-void ContactsView::prevPage() {
-    if (currentPage > 0) currentPage--;
-}
-
-void ContactsView::firstPage() {
-    currentPage = 0;
-}
-
-void ContactsView::lastPage() {
-    int totalPages = (contacts.getContacts().size() + CONTACTS_PER_PAGE - 1) / CONTACTS_PER_PAGE;
-    currentPage = totalPages - 1;
-}

@@ -1,25 +1,16 @@
-#ifndef NOTIFICATIONS_VIEW_H
-#define NOTIFICATIONS_VIEW_H
+#ifndef NOTIFICATIONSVIEW_H
+#define NOTIFICATIONSVIEW_H
 
 #include "NotificationContainer.h"
-#include <string>
+#include "Notification.h"
+#include "Utils.h"
 
 class NotificationsView {
-private:
-    const NotificationContainer& notifications;
-    int currentPage = 0;
-    const int NOTIFICATIONS_PER_PAGE = 10;
 public:
-    explicit NotificationsView(const NotificationContainer& notifications);
-    void chatMenu() const;
-    void printNotifications() const;
-    std::string handleInput(const std::string& input);
-    
-    // Navigation
-    void nextPage();
-    void prevPage();
-    void firstPage();
-    void lastPage();
+    void printNotifications(const NotificationContainer&) const;
+    void printUnreadNotifications(const NotificationContainer&) const;
+    Notification getNotification() const;
 };
 
-#endif // NOTIFICATIONS_VIEW_H
+#endif // NOTIFICATIONSVIEW_H
+

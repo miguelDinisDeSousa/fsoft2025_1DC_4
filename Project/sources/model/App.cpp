@@ -21,3 +21,8 @@ MessageContainer& App::getMessageContainer() {
 NotificationContainer& App::getNotificationContainer() {
     return notificationContainer;
 }
+
+AdministratorContainer& App::getAdminContainer() {
+    return this->adminContainer;
+}
+
