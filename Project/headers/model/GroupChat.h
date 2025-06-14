@@ -9,27 +9,27 @@
 class Group {
 private:
     char name[GROUP_MAX_NAME_LEN] = {'\0'};
-    MessageContainer& messages;
-    ContactContainer& members;
-    ContactContainer& admins;
+    MessageContainer * messages;
+    ContactContainer * members;
+    ContactContainer * admins;
 
 public:
     Group() = default;
-    Group(const char *name, unsigned int &nr_participants, ContactContainer &members, ContactContainer &admins);
+    Group(const char *name, unsigned int &nr_participants, ContactContainer *members, ContactContainer *admins);
 
     // Getters
     const char* getName() const;
     unsigned int getNrParticipants() const;
-    ContactContainer& getMembers();
-    ContactContainer& getAdmins() ;
-    MessageContainer& getMessages();
+    ContactContainer* getMembers();
+    ContactContainer* getAdmins() ;
+    MessageContainer* getMessages();
 
     // Setters
     void setName(const char*);
     void setNrParticipants(unsigned int&);
-    void setMessages(MessageContainer& messages);
-    void setMembers(ContactContainer& members);
-    void setAdmins(ContactContainer& admins);
+    void setMessages(MessageContainer* messages);
+    void setMembers(ContactContainer* members);
+    void setAdmins(ContactContainer* admins);
 
     // Member management
     void addMember(const Contact&);

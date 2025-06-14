@@ -69,7 +69,7 @@ char GroupChatView::displayChat(Group & currentChat, int currentPage) {
     };
     std::cout << "#### " << currentChat.getName() << " ####\n\n";
 
-    std::vector<Message> messages(currentChat.getMessages().getMessages().begin(), currentChat.getMessages().getMessages().end());
+    std::vector<Message> messages(currentChat.getMessages()->getMessages().begin(), currentChat.getMessages()->getMessages().end());
     int appUserMessIndicator = 0;
     int start = currentPage ;
     int end = std::min(start + MESSAGES_PER_PAGE, static_cast<int>(messages.size()));
@@ -79,10 +79,10 @@ char GroupChatView::displayChat(Group & currentChat, int currentPage) {
         char timeBuf[20];
         std::strftime(timeBuf, sizeof(timeBuf), "%H:%M", messages[i].getDate());
 
-        if (messages[i].getSender().getId() == 1) {
+        if (messages[i].getSender()->getId() == 1) {
             std::cout << appUserMessIndicator << " - " << "[" << timeBuf << "] " << ": " << messages[i].getContent() << "\n";
         } else {
-            std::cout << messages[i].getSender().getName() << "[" << timeBuf << "] " << ": " << messages[i].getContent() << "\n";
+            std::cout << messages[i].getSender()->getName() << "[" << timeBuf << "] " << ": " << messages[i].getContent() << "\n";
         }
         appUserMessIndicator++;
     }

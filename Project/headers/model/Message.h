@@ -16,24 +16,24 @@ private:
     unsigned int id = 0;
     char content[MESSAGE_MAX_CONTENT_LEN] = {'\0'};
     time_t date = time(nullptr);;
-    Contact& sender;
+    Contact* sender;
 
 public:
     Message() = default;
 
-    Message(unsigned int &id, const char *content, Contact &sender);
+    Message(unsigned int &id, const char *content, Contact *sender);
 
     // Getters
     unsigned int getId() const;
     const char* getContent() const;
 
     struct tm *getDate() const;
-    Contact& getSender() const;
+    Contact* getSender() const;
 
     // Setters
     void setId(unsigned int&);
     void setContent(const char*);
-    void setSender(Contact&);
+    void setSender(Contact*);
 
 };
 

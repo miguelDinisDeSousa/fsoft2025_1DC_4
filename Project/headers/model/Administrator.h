@@ -5,13 +5,10 @@
 #ifndef FSOFT2025_1DC_4_ADMINISTRATOR_H
 #define FSOFT2025_1DC_4_ADMINISTRATOR_H
 
-
-#include <iostream>
-#include <cstring>
 #include <list>
 #include "GroupChat.h"
 #include "Notification.h"
-#include "Contact.h"
+#include "Contact.h"  // Already included
 #include "Message.h"
 
 #define ADMIN_MAX_NAME_LEN 64
@@ -19,35 +16,21 @@
 #define ADMIN_MAX_PHONE_LEN 16
 #define ADMIN_MAX_ADDRESS_LEN 128
 
-class Administrator {
+class Administrator : public Contact {
 private:
-    unsigned int admin_id = 0;
-    char name[ADMIN_MAX_NAME_LEN] = {'\0'};
-    char email[ADMIN_MAX_EMAIL_LEN] = {'\0'};
-    char phone[ADMIN_MAX_PHONE_LEN] = {'\0'};
     char address[ADMIN_MAX_ADDRESS_LEN] = {'\0'};
-
     std::list<Group> groups;
     std::list<Notification> notifications;
     std::list<Contact> contacts;
-    std::list<Message> messages; // mensagens enviadas
+    std::list<Message> messages;
 
 public:
     Administrator() = default;
-    Administrator(unsigned int&, const char*, const char*, const char*, const char*);
+    Administrator(unsigned int& id, const char* name, const char* email,
+                 const char* phone, const char* address);
 
-    // Getters
-    unsigned int getId() const;
-    const char* getName() const;
-    const char* getEmail() const;
-    const char* getPhone() const;
+    // Getter/Setter for address only (inherits others from Contact)
     const char* getAddress() const;
-
-    // Setters
-    void setId(unsigned int&);
-    void setName(const char*);
-    void setEmail(const char*);
-    void setPhone(const char*);
     void setAddress(const char*);
 
     // List accessors
@@ -62,6 +45,5 @@ public:
     void addContact(const Contact&);
     void addMessage(const Message&);
 };
-
 
 #endif //FSOFT2025_1DC_4_ADMINISTRATOR_H

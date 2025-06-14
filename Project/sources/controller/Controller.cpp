@@ -67,13 +67,9 @@ void Controller::run() {
                     break;
                 case 4:
                     Utils::clearOutput();
-                    runMessages();
-                    break;
-                case 5:
-                    Utils::clearOutput();
                     runNotifications();
                     break;
-                case 6:
+                case 5:
                     isAdmin = false;
                     Utils::clearOutput();
                     std::cout << "\nLogged out.\n";
@@ -182,6 +178,7 @@ void Controller::runChats() {
     }
 }
 
+/*
 void Controller::runMessages() {
     MessageContainer& container = app.getMessageContainer();
     int option;
@@ -209,6 +206,7 @@ void Controller::runMessages() {
         }
     }
 }
+*/
 
 void Controller::runNotifications() {
     NotificationContainer& container = app.getNotificationContainer();

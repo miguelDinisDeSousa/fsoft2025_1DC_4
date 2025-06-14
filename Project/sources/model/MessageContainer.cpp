@@ -66,7 +66,6 @@ void MessageContainer::listMessages() {
                   << ", Content: " << msg.getContent()
                   << ", Date: " << msg.getDate()
                   << ", Sender: " << msg.getSender()
-                  << ", Receiver: " << msg.getReceiver()
                   << std::endl;
     }
 }

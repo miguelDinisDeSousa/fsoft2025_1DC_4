@@ -5,7 +5,7 @@
 #include "InvalidDataException.h"
 #include "DataConsistencyException.h"
 
-Message::Message(unsigned int& id, const char* content, Contact& sender) : sender(sender) {
+Message::Message(unsigned int& id, const char* content, Contact* sender) : sender(sender) {
     setId(id);
     setContent(content);
 }
@@ -23,7 +23,7 @@ struct tm *Message::getDate() const {
     return localtime(&date);
 }
 
-Contact& Message::getSender() const {
+Contact*Message::getSender() const {
     return this->sender;
 }
 
@@ -44,6 +44,6 @@ void Message::setContent(const char* content) {
 }
 
 
-void Message::setSender(Contact& sender) {
+void Message::setSender(Contact* sender) {
     this->sender = sender;
 }

@@ -45,14 +45,32 @@ void addBaseData(App& app) {
      unsigned int groupParticipants = 2;
      std::string baseName = "Team ";
 
-    for (int i = 1; i <= 100; i++) {
+    for (unsigned int  i = 1; i <= 100; i++) {
+
+        ContactContainer groupMembers;
+        ContactContainer groupAdmins;
+
+        groupMembers.addContact(c1);
+        groupMembers.addContact(c2);
+        groupAdmins.addContact(c1);
+        groupAdmins.addContact(c2);
+
         // Create group name with index
         std::string groupName = baseName + std::to_string(i);
 
         // Create and populate the group
-        Group group((groupName.c_str()), groupParticipants);
-        group.addMember(c1);
-        group.addMember(c2);
+        Group group((groupName.c_str()), groupParticipants, &groupMembers, &groupAdmins);
+        unsigned int messageId1 = id1 + i;
+        Message newMessage1 = Message(messageId1, "Olá o meu nome é Carlos Mendes", &admin1);
+        group.getMessages()->addMessage(newMessage1);
+
+        unsigned int messageId2 = id2 + i;
+        Message newMessage2 = Message(messageId2, "Olá o meu nome é Joana Costa",&c1);
+        group.getMessages()->addMessage(newMessage2);
+
+        unsigned int messageId3 = id3 + i;
+        Message newMessage3 = Message(messageId3, "Olá o meu nome é Marco Silva", &c2);
+        group.getMessages()->addMessage(newMessage3);
 
         // Add to admin and container
         admin1.addGroup(group);
@@ -61,9 +79,7 @@ void addBaseData(App& app) {
     }
 
 
-    Group group("Equipa Técnica", groupParticipants);
-    group.addMember(c1);
-    group.addMember(c2);
+    Group group("Equipa Técnica", groupParticipants, &contactContainer, &contactContainer);
 
     admin1.addGroup(group);
     groupChatContainer.addGroup(group);
@@ -78,7 +94,7 @@ void addBaseData(App& app) {
 
     // === Criar mensagem entre admin1 e contacto ===
     unsigned int msgId = 201, senderId = id1, receiverId = cid1;
-    Message msg(msgId, "Bom dia, Joana!", "2025-06-12", senderId, receiverId);
+    Message msg(msgId, "Bom dia, Joana!", &c1);
 
     admin1.addMessage(msg);
     messageContainer.addMessage(msg);
