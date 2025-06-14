@@ -100,6 +100,54 @@ char GroupChatView::displayChat(Group & currentChat, int currentPage) {
     return Utils::getCharIfAllowed(allowedChars);
 }
 
+char GroupChatView::displayChatSettings(Group& currentChat, int currentPage) {
+    const std::vector<char> allowedChars = {
+        'b',
+        'm',
+        '0','1','2','3','4','5','6','7','8','9',
+        '+',
+        '-',
+        's',
+        'S',
+        'n',
+        'a',
+        'e'
+    };
+
+    std::cout << "#### Chat Settings ###\n";
+
+    // Display members
+    std::cout << "Members:\n";
+    std::vector<Contact> members(currentChat.getMembers()->getContactList().begin(), currentChat.getMembers()->getContactList().end());
+    int start = currentPage;
+    int end = std::min(start + CHATS_PER_PAGE, static_cast<int>(members.size()));
+
+
+    for (int i = start; i < end; ++i) {
+        std::cout << (i - start) << " - " << members[i].getName();
+        if (currentChat.isContactAdmin(members[i].getId())) {
+            std::cout << " (admin)";
+        }
+        std::cout << "\n";
+    }
+
+    std::cout << "\nPick one option:\n";
+    std::cout << "b- Go back to chat\n";
+    std::cout << "m - Go back to main Menu\n";
+    std::cout << "+ - Go to next 10 members\n";
+    std::cout << "- - Go to previous 10 members\n";
+    std::cout << "s - Go to start of the list\n";
+    std::cout << "S - Go to end of the list\n";
+    std::cout << "0-9 - Remove member (admin)\n";
+    std::cout << "n - Change group name (admin)\n";
+    std::cout << "a - add member (admin)\n";
+    std::cout << "e - Add admin members (admin)\n";
+
+
+    return Utils::getCharIfAllowed(allowedChars);
+}
+
+
 /*
 void GroupChatView::displayGroups(const std::list<Group>& groups) const {
     if (groups.empty()) {

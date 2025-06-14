@@ -33,7 +33,12 @@ public:
 
     // Member management
     void addMember(const Contact&);
+
+    void addAdmin(const Contact &contact);
+
     void removeMember(int contactId);
+
+    void removeAdmin(int contactId);
 
     //Verify if Contact is admin
     bool isContactAdmin(int contactId);

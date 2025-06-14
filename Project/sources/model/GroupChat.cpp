@@ -1,4 +1,7 @@
 #include "GroupChat.h"
+
+#include <algorithm>
+
 #include "InvalidDataException.h"
 #include "DataConsistencyException.h"
 #include <cstring> // Para strlen, strncpy
@@ -83,17 +86,28 @@ void Group::addMember(const Contact& contact) {
     members->getContactList().push_back(contact);
 }
 
-void Group::removeMember(int contactId) {
-
-    for (auto it = members->getContactList().begin(); it != members->getContactList().end(); ++it) {
-        if (it->getId() == contactId) {
-            members->getContactList().erase(it);
-            return;
+void Group::addAdmin(const Contact& contact) {
+    ContactContainer& membersRef = *admins;
+    for (const auto& member : membersRef.getContactList()) {
+        if (member.getId() == contact.getId()) {
+            throw DataConsistencyException("Contact is already admin in the group.");
         }
     }
-
-    throw InvalidDataException("Contact with the given name not found in the group.");
+    members->getContactList().push_back(contact);
 }
+
+void Group::removeMember(int contactId) {
+    auto& contactList = members->getContactList();
+    auto it = std::find_if(contactList.begin(), contactList.end(),
+        [contactId](const Contact& c) { return c.getId() == contactId; });
+
+    if (it != contactList.end()) {
+        contactList.erase(it);
+    } else {
+        throw InvalidDataException("That contact is no member of the group");
+    }
+}
+
 
 bool Group::isContactAdmin(const int contactId) {
 

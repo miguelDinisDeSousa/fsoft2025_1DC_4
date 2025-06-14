@@ -14,6 +14,8 @@ public:
 
     static char displayChat(Group &currentChat, int currentPage) ;
 
+    char displayChatSettings(Group &currentChat, int currentPage);
+
     void displayGroups(const std::list<Group>& groups) const;
     void displayGroupMembers(const Group& group) const;
     Group getGroup(Contact &admin) const;

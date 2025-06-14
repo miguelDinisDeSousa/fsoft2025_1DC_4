@@ -37,12 +37,16 @@ void addBaseData(App& app) {
 
     contactContainer.addContact(c1);
     contactContainer.addContact(c2);
+    contactContainer.addContact(admin1);
+    contactContainer.addContact(admin2);
+    contactContainer.addContact(admin3);
+
 
     // === Criar grupo com membros e adicionar ===
 
 
 
-     unsigned int groupParticipants = 2;
+     unsigned int groupParticipants = 5;
      std::string baseName = "Team ";
 
     for (unsigned int  i = 1; i <= 100; i++) {

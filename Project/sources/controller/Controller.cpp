@@ -208,10 +208,13 @@ bool Controller::runChat(Group &chat) {
 
             int optionInt = (int) option - '0';
             std::vector<Message> messages(chat.getMessages()->getMessages().begin(), chat.getMessages()->getMessages().end());
-            chat.getMessages()->removeMessageById(messages[optionInt].getId(), 1);
+            chat.getMessages()->removeMessageById(messages[optionInt + currentPage].getId(), 1);
 
         } else if (option == 'e') {
-
+            bool goBackMainMenu = Controller::runChatSettings(chat);
+            if (goBackMainMenu) {
+                return true;
+            }
         } else if (option == 'N') {
             char* messageText = nullptr;
             Utils::getString("Write your Message:", messageText, 3);
@@ -220,6 +223,68 @@ bool Controller::runChat(Group &chat) {
                                               &app.getAdminContainer().getAdministratorByID(1));
             chat.getMessages()->addMessage(*newMessage);
             app.getMessageContainer().addMessage(*newMessage);
+        }
+    }
+}
+
+bool Controller::runChatSettings(Group &chat) {
+    int currentPage = 0;
+    while (true) {
+        char option = groupChatView.displayChatSettings(chat, currentPage);
+
+        if (option == 'b') {
+            return false;
+        } else if (option == 'm') {
+            return true;
+        } else if (option == '-' && currentPage >= 10) {
+            currentPage -= 10;
+
+        } else if (option == '-' || option == 's') {
+            currentPage = 0;
+
+        } else if (option == '+') {
+            currentPage += 10;
+
+        }  else if (option == 'S' && chat.getMembers()->getContactList().size() > 10) {
+            currentPage = chat.getMembers()->getContactList().size() - 1 - 10;
+
+        }  else if (chat.isContactAdmin(app.getAdminContainer().getAdministratorByID(1).getId())) {
+
+            if ((int)option >= '0' && (int)option <= '9') {
+
+                int optionInt = (int) option - '0';
+                std::vector<Contact> members(chat.getMembers()->getContactList().begin(), chat.getMembers()->getContactList().end());
+                chat.removeMember(members[optionInt + currentPage].getId());
+            } else if (option == 'e') {
+                char * name;
+                Utils::getString("Enter name of admin to add", name,3);
+                try {
+                    Contact newContact = app.getContactContainer().getContactFromName(name);
+                    chat.addMember(newContact);
+                    chat.addAdmin(newContact);
+                } catch (InvalidDataException e) {
+                    std::cout << e.what();
+                }
+
+            }   else if (option == 'a') {
+                char * name;
+                Utils::getString("Enter name of member to add", name,3);
+                try {
+                    Contact newContact = app.getContactContainer().getContactFromName(name);
+                    chat.getMembers()->addContact(newContact);
+                } catch (InvalidDataException e) {
+                    std::cout << e.what();
+                }
+
+            } else if (option == 'n') {
+                char * newGroupName;
+                Utils::getString("Enter new name for the group", newGroupName,3);
+                chat.setName(newGroupName);
+            }
+
+        } else if ((option== 'n' || option == 'e' || option == 'a' || ((int)option >= '0' && (int)option <= '9'))
+            && !chat.isContactAdmin(app.getAdminContainer().getAdministratorByID(1).getId())) {
+            std::cout << "\n \n WARNING: You do not have admin privileges";
         }
     }
 }

@@ -31,6 +31,8 @@ public:
 
     bool runChat(Group &chat);
 
+    bool runChatSettings(Group &chat);
+
     void runMessages();
     void runNotifications();
     void runAdmin();
