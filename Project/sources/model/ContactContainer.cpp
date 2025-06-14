@@ -2,6 +2,9 @@
 // Created by carlo on 04/06/2025.
 //
 #include "ContactContainer.h"
+
+#include <algorithm>
+
 #include "Contact.h"
 #include <iostream>
 #include <cstring>
@@ -114,5 +117,17 @@ Contact& ContactContainer::getContactFromID(unsigned int& id) {
     }
 
     throw InvalidDataException("Could not get contact object from the given ID");
+}
+
+Contact& ContactContainer::getContactFromName(const char* name) {
+    for (auto& contact : contacts) {
+        std::cout << contact.getName() ;
+        if (std::strcmp(contact.getName(), name) == 0) {
+            return contact;
+
+        }
+    }
+
+    throw InvalidDataException("\n Could not get contact object from the given Name \n");
 }
 

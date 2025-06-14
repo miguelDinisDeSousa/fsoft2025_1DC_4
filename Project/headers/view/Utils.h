@@ -2,6 +2,7 @@
 #define UTILS_CLASS_INCLUDE
 
 #include <cstring>
+#include <vector>
 
 typedef enum {
     UNIX_OS = 0,
@@ -22,6 +23,7 @@ typedef enum {
 } FilterType;
 
 namespace Utils {
+    char getCharIfAllowed(std::vector<char> allowedChars);
     int getNumber(const char*);
     void getString(const char*, char*&, size_t = 1);
     double getDouble(const char*);

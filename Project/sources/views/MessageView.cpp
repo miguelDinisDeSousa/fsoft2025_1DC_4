@@ -8,7 +8,8 @@ void MessageView::displayHeader(const std::string& chatName) const {
 
 Message MessageView::getMessageInput() const {
     unsigned int id = Utils::getNumber("Enter message ID");
-    unsigned int sender = Utils::getNumber("Enter sender ID");
+    //unsigned int sender = Utils::getNumber("Enter sender ID");
+    Contact sender = Contact();
     unsigned int receiver = Utils::getNumber("Enter receiver ID");
 
     char* content;
@@ -17,7 +18,7 @@ Message MessageView::getMessageInput() const {
     char* date;
     Utils::getString("Enter message date", date, 4);  // ou usar Utils::getCurrentDate() se preferires gerar a data automaticamente
 
-    Message msg(id, content, date, sender, receiver);
+    Message msg(id, content, &sender);
 
     delete[] content;
     delete[] date;

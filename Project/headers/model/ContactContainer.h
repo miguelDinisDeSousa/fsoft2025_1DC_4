@@ -24,6 +24,8 @@ public:
     std::list<Contact>& getContactList();
     bool existsContactWithID(unsigned int& id);
     Contact& getContactFromID(unsigned int& id);
+
+    Contact &getContactFromName(const char *name);
 };
 
 #endif //FSOFT2025_1DC_4_CONTACTCONTAINER_H

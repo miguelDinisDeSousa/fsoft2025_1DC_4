@@ -32,6 +32,8 @@ public:
     bool existsMessageWithID(unsigned int& id);
     Message& getMessageFromID(unsigned int& id);
 
+    bool removeMessageById(unsigned int id, unsigned int ownerId);
+
     const std::list<Message>& getMessages() const;
     void setMessages(const std::list<Message>& newMessages);
 };

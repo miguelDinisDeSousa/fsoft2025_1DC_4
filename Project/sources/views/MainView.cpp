@@ -3,7 +3,7 @@
 #include <iostream>
 
 void MainView::display() const {
-    std::cout << "UNUM MBIHIMENU INNUM\n\n";
+    std::cout << "### Main Menu ###\n\n";
     std::cout << "Pick one option:\n\n";
     std::cout << "0.Contacts Menu\n";
     std::cout << "1.Notifications\n";
