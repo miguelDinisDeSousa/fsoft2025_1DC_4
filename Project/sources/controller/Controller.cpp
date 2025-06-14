@@ -167,7 +167,7 @@ void Controller::runChats() {
             Utils::getString("Write Group name:", chatName, 0);
             if (container.existsGroupWithName(chatName)) {
                 Group searchedGroup = container.getGroupByName(chatName);
-                //TODO - JESS Add GroupChat view here
+                //TODO - Add GroupChat view here
             } else {
                 std::cout << "No Group by that name \n";
             }
@@ -177,7 +177,7 @@ void Controller::runChats() {
             int optionInt = (int) option - '0';
             std::vector<Group> chats(container.getGroupList().begin(), container.getGroupList().end());
             Group selectedGroup = chats[optionInt + currentPage];
-            //TODO - JESS Add GroupChat view here
+            //TODO - Add GroupChat view here
         }
     }
 }

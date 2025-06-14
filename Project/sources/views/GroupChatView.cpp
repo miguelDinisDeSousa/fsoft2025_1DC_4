@@ -1,4 +1,7 @@
 #include "GroupChatView.h"
+
+#include <ctime>
+
 #include "GroupChat.h"
 #include "Message.h"
 #include "GroupChatContainer.h"
@@ -51,37 +54,55 @@ char GroupChatView::displayChats(GroupChatContainer& container, int currentPage)
 
         return Utils::getCharIfAllowed(allowedChars);
     }
-
-
 }
-void GroupChatView::displayChat(Group & currentChat) const {
+
+char GroupChatView::displayChat(Group & currentChat, int currentPage) {
+    const std::vector<char> allowedChars = {
+        'm',
+        '0','1','2','3','4','5','6','7','8','9',
+        '+',
+        '-',
+        'a',
+        's',
+        'S',
+        'f'
+    };
     std::cout << "#### " << currentChat.getName() << " ####\n\n";
 
-    std::vector<Message> messages = currentChat.getMessages().getMessages();
-    int start = currentPage * MESSAGES_PER_PAGE;
+    std::vector<Message> messages(currentChat.getMessages().getMessages().begin(), currentChat.getMessages().getMessages().end());
+    int appUserMessIndicator = 0;
+    int start = currentPage ;
     int end = std::min(start + MESSAGES_PER_PAGE, static_cast<int>(messages.size()));
 
     for (int i = start; i < end; i++) {
-        const Message& msg = messages[i];
 
-        // Format time
         char timeBuf[20];
-        std::strftime(timeBuf, sizeof(timeBuf), "%H:%M", std::localtime(&msg.getDate()));
+        std::strftime(timeBuf, sizeof(timeBuf), "%H:%M", messages[i].getDate());
 
-        std::cout << "[" << timeBuf << "] "
-                  << msg.getSender().getName() << ": "
-                  << msg.getContent() << "\n";
+        if (messages[i].getSender().getId() == 1) {
+            std::cout << appUserMessIndicator << " - " << "[" << timeBuf << "] " << ": " << messages[i].getContent() << "\n";
+        } else {
+            std::cout << messages[i].getSender().getName() << "[" << timeBuf << "] " << ": " << messages[i].getContent() << "\n";
+        }
+        appUserMessIndicator++;
     }
 
-    std::cout << "\nPick one option:\n";
-    std::cout << "b - Go back to chats\n";
-    std::cout << "s - Settings\n";
-    std::cout << "d <num> - Delete message (admin/sender)\n";
-    std::cout << "Enter - View older messages\n";
-    std::cout << "Type your message and press Enter to send\n";
+
+    std::cout << "\n \n Pick one option: \n";
+    std::cout << "b - Go back to Chats Menu\n";
+    std::cout << "m - Go back to Main Menu\n";
+    std::cout << "0-9 - Delete your message\n";
+    std::cout << "+ - Go to next 10 messages\n";
+    std::cout << "- - Go to previous 10 messages\n";
+    std::cout << "s - Go to start of the chat\n";
+    std::cout << "S - Go to end of the chat\n";
+    std::cout << "e - Edit Chat Settings\n";
+    std::cout << "N - Send a new Message\n";
+
+    return Utils::getCharIfAllowed(allowedChars);
 }
 
-
+/*
 void GroupChatView::displayGroups(const std::list<Group>& groups) const {
     if (groups.empty()) {
         std::cout << "No groups available.\n";
@@ -109,6 +130,7 @@ void GroupChatView::displayGroupMembers(const Group& group) const {
     }
 }
 
+
 Group GroupChatView::getGroup() const {
     char* name;
     Utils::getString("Enter group name", name, 3);
@@ -126,3 +148,4 @@ Group GroupChatView::getGroup() const {
     delete[] name;
     return group;
 }
+*/

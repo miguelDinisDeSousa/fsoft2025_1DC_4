@@ -5,9 +5,8 @@
 #ifndef FSOFT2025_1DC_4_MESSAGE_H
 #define FSOFT2025_1DC_4_MESSAGE_H
 
-
 #include <iostream>
-#include <cstring>
+#include "Contact.h"
 
 #define MESSAGE_MAX_CONTENT_LEN 256
 #define MESSAGE_MAX_DATE_LEN 32
@@ -16,27 +15,26 @@ class Message {
 private:
     unsigned int id = 0;
     char content[MESSAGE_MAX_CONTENT_LEN] = {'\0'};
-    char date[MESSAGE_MAX_DATE_LEN] = {'\0'};
-    unsigned int sender = 0;
-    unsigned int receiver = 0;
+    time_t date = time(nullptr);;
+    Contact& sender;
 
 public:
     Message() = default;
-    Message(unsigned int&, const char*, const char*, unsigned int&, unsigned int&);
+
+    Message(unsigned int &id, const char *content, Contact &sender);
 
     // Getters
     unsigned int getId() const;
     const char* getContent() const;
-    const char* getDate() const;
-    unsigned int getSender() const;
-    unsigned int getReceiver() const;
+
+    struct tm *getDate() const;
+    Contact& getSender() const;
 
     // Setters
     void setId(unsigned int&);
     void setContent(const char*);
-    void setDate(const char*);
-    void setSender(unsigned int&);
-    void setReceiver(unsigned int&);
+    void setSender(Contact&);
+
 };
 
 

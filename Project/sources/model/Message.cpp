@@ -5,12 +5,9 @@
 #include "InvalidDataException.h"
 #include "DataConsistencyException.h"
 
-Message::Message(unsigned int& id, const char* content, const char* date, unsigned int& sender, unsigned int& receiver) {
+Message::Message(unsigned int& id, const char* content, Contact& sender) : sender(sender) {
     setId(id);
     setContent(content);
-    setDate(date);
-    setSender(sender);
-    setReceiver(receiver);
 }
 
 // Getters
@@ -22,17 +19,14 @@ const char* Message::getContent() const {
     return this->content;
 }
 
-const char* Message::getDate() const {
-    return this->date;
+struct tm *Message::getDate() const {
+    return localtime(&date);
 }
 
-unsigned int Message::getSender() const {
+Contact& Message::getSender() const {
     return this->sender;
 }
 
-unsigned int Message::getReceiver() const {
-    return this->receiver;
-}
 
 // Setters
 void Message::setId(unsigned int& id) {
@@ -49,20 +43,7 @@ void Message::setContent(const char* content) {
     this->content[MESSAGE_MAX_CONTENT_LEN - 1] = '\0';
 }
 
-void Message::setDate(const char* date) {
-    if (!date) throw InvalidDataException("Invalid pointer to date.");
-    size_t len = strlen(date);
-    if (len < 4 || len > MESSAGE_MAX_DATE_LEN) {
-        throw DataConsistencyException("Date must be between 4 and 32 characters.");
-    }
-    strncpy(this->date, date, MESSAGE_MAX_DATE_LEN);
-    this->date[MESSAGE_MAX_DATE_LEN - 1] = '\0';
-}
 
-void Message::setSender(unsigned int& sender) {
+void Message::setSender(Contact& sender) {
     this->sender = sender;
-}
-
-void Message::setReceiver(unsigned int& receiver) {
-    this->receiver = receiver;
 }
