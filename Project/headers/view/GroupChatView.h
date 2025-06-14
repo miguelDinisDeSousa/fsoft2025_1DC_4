@@ -16,7 +16,7 @@ public:
 
     void displayGroups(const std::list<Group>& groups) const;
     void displayGroupMembers(const Group& group) const;
-    Group getGroup() const;
+    Group getGroup(Contact &admin) const;
 
 };
 

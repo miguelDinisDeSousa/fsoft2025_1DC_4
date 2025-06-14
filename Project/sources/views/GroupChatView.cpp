@@ -129,21 +129,22 @@ void GroupChatView::displayGroupMembers(const Group& group) const {
 }
 */
 
-Group GroupChatView::getGroup() const {
+Group GroupChatView::getGroup(Contact& admin) const {
     char* name;
     Utils::getString("Enter group name", name, 3);
 
     unsigned int count = static_cast<unsigned int>(Utils::getNumber("Enter number of participants"));
-
-    Group group;
+    ContactContainer members;
+    Group *group;
+    members.addContact(admin);
     try {
-        group.setName(name);
-        group.setNrParticipants(count);
+        group = new Group(name, count, &members, &members);
+
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
 
     delete[] name;
-    return group;
+    return *group;
 }
 
