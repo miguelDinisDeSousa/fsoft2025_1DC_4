@@ -1,10 +1,12 @@
 #include "GroupChatView.h"
 #include "GroupChat.h"
+#include "Message.h"
 #include "GroupChatContainer.h"
 #include "Utils.h"
 #include <vector>
 
 #define CHATS_PER_PAGE 10
+#define MESSAGES_PER_PAGE 10
 
 char GroupChatView::displayChats(GroupChatContainer& container, int currentPage) const {
     std::cout << "#### Chats Menu ###\n\n";
@@ -51,6 +53,32 @@ char GroupChatView::displayChats(GroupChatContainer& container, int currentPage)
     }
 
 
+}
+void GroupChatView::displayChat(Group & currentChat) const {
+    std::cout << "#### " << currentChat.getName() << " ####\n\n";
+
+    std::vector<Message> messages = currentChat.getMessages().getMessages();
+    int start = currentPage * MESSAGES_PER_PAGE;
+    int end = std::min(start + MESSAGES_PER_PAGE, static_cast<int>(messages.size()));
+
+    for (int i = start; i < end; i++) {
+        const Message& msg = messages[i];
+
+        // Format time
+        char timeBuf[20];
+        std::strftime(timeBuf, sizeof(timeBuf), "%H:%M", std::localtime(&msg.getDate()));
+
+        std::cout << "[" << timeBuf << "] "
+                  << msg.getSender().getName() << ": "
+                  << msg.getContent() << "\n";
+    }
+
+    std::cout << "\nPick one option:\n";
+    std::cout << "b - Go back to chats\n";
+    std::cout << "s - Settings\n";
+    std::cout << "d <num> - Delete message (admin/sender)\n";
+    std::cout << "Enter - View older messages\n";
+    std::cout << "Type your message and press Enter to send\n";
 }
 
 
