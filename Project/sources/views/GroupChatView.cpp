@@ -8,6 +8,8 @@
 #include "Utils.h"
 #include <vector>
 
+#include "AdministratorContainer.h"
+
 #define CHATS_PER_PAGE 10
 #define MESSAGES_PER_PAGE 10
 
@@ -58,33 +60,29 @@ char GroupChatView::displayChats(GroupChatContainer& container, int currentPage)
 
 char GroupChatView::displayChat(Group & currentChat, int currentPage) {
     const std::vector<char> allowedChars = {
-        'm',
-        '0','1','2','3','4','5','6','7','8','9',
-        '+',
-        '-',
-        'a',
-        's',
-        'S',
-        'f'
+        'b', // Back to Chats Menu
+        'm', // Back to Main Menu
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', // Delete message
+        '+', // Next 10 messages
+        '-', // Previous 10 messages
+        's', // Start of chat
+        'S', // End of chat
+        'e', // Edit settings
+        'N' // New message
     };
     std::cout << "#### " << currentChat.getName() << " ####\n\n";
 
     std::vector<Message> messages(currentChat.getMessages()->getMessages().begin(), currentChat.getMessages()->getMessages().end());
-    int appUserMessIndicator = 0;
+
     int start = currentPage ;
     int end = std::min(start + MESSAGES_PER_PAGE, static_cast<int>(messages.size()));
 
     for (int i = start; i < end; i++) {
 
-        char timeBuf[20];
+        char timeBuf[100];
         std::strftime(timeBuf, sizeof(timeBuf), "%H:%M", messages[i].getDate());
+        std::cout << (i - currentPage) << " - " << messages[i].getSender()->getName() << "[" << timeBuf << "] " << ": " << messages[i].getContent() << "\n";
 
-        if (messages[i].getSender()->getId() == 1) {
-            std::cout << appUserMessIndicator << " - " << "[" << timeBuf << "] " << ": " << messages[i].getContent() << "\n";
-        } else {
-            std::cout << messages[i].getSender()->getName() << "[" << timeBuf << "] " << ": " << messages[i].getContent() << "\n";
-        }
-        appUserMessIndicator++;
     }
 
 
@@ -129,7 +127,7 @@ void GroupChatView::displayGroupMembers(const Group& group) const {
                   << " | Phone: " << member.getPhone() << "\n";
     }
 }
-
+*/
 
 Group GroupChatView::getGroup() const {
     char* name;
@@ -148,4 +146,4 @@ Group GroupChatView::getGroup() const {
     delete[] name;
     return group;
 }
-*/
+

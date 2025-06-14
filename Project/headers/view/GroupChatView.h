@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <list>
+
+#include "AdministratorContainer.h"
 #include "GroupChat.h"
 #include "GroupChatContainer.h"
 
