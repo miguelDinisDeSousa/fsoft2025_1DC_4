@@ -29,7 +29,7 @@ public:
     void runContacts();
     void runChats();
 
-    void runChat(Group &chat);
+    bool runChat(Group &chat);
 
     void runMessages();
     void runNotifications();

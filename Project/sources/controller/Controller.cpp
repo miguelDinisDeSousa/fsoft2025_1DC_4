@@ -149,13 +149,13 @@ void Controller::runChats() {
         } else if (option == '-' && currentPage >= 10) {
             currentPage -= 10;
 
+        } else if (option == '-' || option == 's') {
+            currentPage = 0;
+
         } else if (option == '+') {
             currentPage += 10;
 
-        } else if (option == 's') {
-            currentPage = 0;
-
-        } else if (option == 'S' && container.getGroupList().size() > 10) {
+        }  else if (option == 'S' && container.getGroupList().size() > 10) {
             currentPage = container.getGroupList().size() - 1 - 10;
 
         } else if (option == 'f') {
@@ -174,31 +174,34 @@ void Controller::runChats() {
             int optionInt = (int) option - '0';
             std::vector<Group> chats(container.getGroupList().begin(), container.getGroupList().end());
             Group selectedGroup = chats[optionInt + currentPage];
-            Controller::runChat(selectedGroup);
+            bool goBackMainMenu = Controller::runChat(selectedGroup);
+            if (goBackMainMenu) {
+                return;
+            }
         }
     }
 }
 
 
-void Controller::runChat(Group& chat) {
+bool Controller::runChat(Group &chat) {
     int currentPage = 0;
     while (true) {
         char option = GroupChatView::displayChat(chat, currentPage);
 
         if (option == 'b') {
-            return;
+            return false;
         } else if (option == 'm') {
-
+            return true;
         } else if (option == '-' && currentPage >= 10) {
             currentPage -= 10;
+
+        } else if (option == '-' || option == 's') {
+            currentPage = 0;
 
         } else if (option == '+') {
             currentPage += 10;
 
-        } else if (option == 's') {
-            currentPage = 0;
-
-        } else if (option == 'S' && chat.getMessages()->getMessages().size() > 10) {
+        }  else if (option == 'S' && chat.getMessages()->getMessages().size() > 10) {
             currentPage = chat.getMessages()->getMessages().size() - 1 - 10;
 
         }  else if ((int)option >= '0' && (int)option <= '9') {
@@ -220,36 +223,6 @@ void Controller::runChat(Group& chat) {
         }
     }
 }
-
-/*
-void Controller::runMessages() {
-    MessageContainer& container = app.getMessageContainer();
-    int option;
-    while ((option = view.MessageMenu()) != 0) {
-        switch (option) {
-            case 1: {
-                Message message = messageView.getMessageInput();
-                container.addMessage(message);
-                break;
-            }
-            case 2: {
-                Message message = messageView.getMessageInput();
-                container.removeMessage(message, FILTER_ID);
-                break;
-            }
-            case 3: {
-                container.listMessages();
-                std::cout << "\nPress Enter to continue...";
-                std::cin.ignore();
-                std::cin.get();
-                break;
-            }
-            default:
-                break;
-        }
-    }
-}
-*/
 
 void Controller::runNotifications() {
     NotificationContainer& container = app.getNotificationContainer();
