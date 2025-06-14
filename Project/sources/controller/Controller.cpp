@@ -144,7 +144,8 @@ void Controller::runChats() {
         if (option == 'm') {
             return;
         } else if (option == 'a') {
-
+            Group group = groupChatView.getGroup();
+            container.addGroup(group);
         } else if (option == '-' && currentPage >= 10) {
             currentPage -= 10;
 
@@ -163,7 +164,7 @@ void Controller::runChats() {
             Utils::getString("Write Group name:", chatName, 0);
             if (container.existsGroupWithName(chatName)) {
                 Group searchedGroup = container.getGroupByName(chatName);
-                //TODO - Add GroupChat view here
+                Controller::runChat(searchedGroup);
             } else {
                 std::cout << "No Group by that name \n";
             }
@@ -173,7 +174,49 @@ void Controller::runChats() {
             int optionInt = (int) option - '0';
             std::vector<Group> chats(container.getGroupList().begin(), container.getGroupList().end());
             Group selectedGroup = chats[optionInt + currentPage];
-            //TODO - Add GroupChat view here
+            Controller::runChat(selectedGroup);
+        }
+    }
+}
+
+
+void Controller::runChat(Group& chat) {
+    int currentPage = 0;
+    while (true) {
+        char option = GroupChatView::displayChat(chat, currentPage);
+
+        if (option == 'b') {
+            return;
+        } else if (option == 'm') {
+
+        } else if (option == '-' && currentPage >= 10) {
+            currentPage -= 10;
+
+        } else if (option == '+') {
+            currentPage += 10;
+
+        } else if (option == 's') {
+            currentPage = 0;
+
+        } else if (option == 'S' && chat.getMessages()->getMessages().size() > 10) {
+            currentPage = chat.getMessages()->getMessages().size() - 1 - 10;
+
+        }  else if ((int)option >= '0' && (int)option <= '9') {
+
+            int optionInt = (int) option - '0';
+            std::vector<Message> messages(chat.getMessages()->getMessages().begin(), chat.getMessages()->getMessages().end());
+            chat.getMessages()->removeMessageById(messages[optionInt].getId(), 1);
+
+        } else if (option == 'e') {
+
+        } else if (option == 'N') {
+            char* messageText = nullptr;
+            Utils::getString("Write your Message:", messageText, 3);
+            unsigned int newMessageId = app.getMessageContainer().getMessageList().size() + 1;
+            Message *newMessage = new Message(newMessageId, messageText,
+                                              &app.getAdminContainer().getAdministratorByID(1));
+            chat.getMessages()->addMessage(*newMessage);
+            app.getMessageContainer().addMessage(*newMessage);
         }
     }
 }

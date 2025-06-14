@@ -28,6 +28,9 @@ public:
     void run();
     void runContacts();
     void runChats();
+
+    void runChat(Group &chat);
+
     void runMessages();
     void runNotifications();
     void runAdmin();

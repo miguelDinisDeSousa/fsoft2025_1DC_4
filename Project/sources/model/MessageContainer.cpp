@@ -2,6 +2,9 @@
 // Created by carlo on 04/06/2025.
 //
 #include "MessageContainer.h"
+
+#include <algorithm>
+
 #include "Message.h"
 
 void MessageContainer::addMessage(Message& message) {
@@ -112,4 +115,21 @@ Message& MessageContainer::getMessageFromID(unsigned int& id) {
         }
     }
     throw InvalidDataException("Could not get message object from the given ID");
+}
+
+bool MessageContainer::removeMessageById(unsigned int id, unsigned int ownerId) {
+    auto it = std::find_if(messages.begin(), messages.end(),
+        [id](const Message& m) { return m.getId() == id; });
+
+    if (it != messages.end()) {
+        if (it->getSender() && it->getSender()->getId() == ownerId) {
+            messages.erase(it);
+            return true;
+        }else {
+
+            std::cout << "\n WARNING: You can only delete your messages \n";
+        }
+
+    }
+    return false;
 }
