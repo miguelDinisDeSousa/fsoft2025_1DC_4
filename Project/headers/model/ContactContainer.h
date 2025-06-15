@@ -20,6 +20,9 @@ public:
     int removeContact(Contact& contact, FilterType filter);
     void listContacts();
     bool isContactUnique(Contact& contact);
+
+    void getUniqueId(Contact *contact);
+
     bool isListEmpty();
     std::list<Contact>& getContactList();
     bool existsContactWithID(unsigned int& id);

@@ -16,9 +16,8 @@ void ContactContainer::addContact(Contact& contact) {
         throw InvalidDataException("Can't create contact because fields do not follow the requirements");
     }
 
-    if (contact.getId() == 0) {
-        contact.setId(++biggestID);
-    }
+    getUniqueId(&contact);
+
 
     if (!this->isContactUnique(contact)) {
         throw DuplicatedDataException("A contact already exists with the data provided");
@@ -84,6 +83,17 @@ bool ContactContainer::isContactUnique(Contact& contact) {
         }
     }
     return true;
+}
+
+void ContactContainer::getUniqueId(Contact *contact) {
+    unsigned int id = 0;
+    for (auto& existing : this->contacts) {
+
+        if (id <= existing.getId()) {
+            id++;
+        }
+    }
+    contact->setId(id);
 }
 
 bool ContactContainer::isListEmpty() {

@@ -92,7 +92,11 @@ void Controller::runContacts() {
         switch (option) {
             case 1: {
                 Contact contact = contactsView.getContact();
-                container.addContact(contact);
+                try {
+                    container.addContact(contact);
+                } catch (DuplicatedDataException e) {
+                    std::cout << e.what();
+                }
                 break;
             }
             case 2: {
