@@ -3,6 +3,8 @@
 #include <limits>
 #include <ctime>
 #include <cstdlib>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -10,6 +12,23 @@ using namespace std;
 #include "InvalidDataException.h"
 
 #define MAX_LENGHT 100
+
+char Utils::getCharIfAllowed(vector<char> allowedChars) {
+
+    std::string userInput;
+    std::cout << "Enter your input: ";
+    std::getline(std::cin, userInput);
+
+    // Validate each character
+    for (char c : userInput) {
+        if (std::find(allowedChars.begin(), allowedChars.end(), c) == allowedChars.end()) {
+            std::cout << "Invalid character found: '" << c << "'" << std::endl;
+            return getCharIfAllowed(allowedChars);
+        }
+        return c;
+    }
+}
+
 
 int Utils::getNumber(const char* message){
     int inputNumber = -1;

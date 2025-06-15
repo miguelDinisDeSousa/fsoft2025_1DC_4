@@ -37,12 +37,46 @@ void addBaseData(App& app) {
 
     contactContainer.addContact(c1);
     contactContainer.addContact(c2);
+    contactContainer.addContact(admin1);
+    contactContainer.addContact(admin2);
+    contactContainer.addContact(admin3);
+
 
     // === Criar grupo com membros e adicionar ===
-    unsigned int groupParticipants = 2;
-    Group group("Equipa Técnica", groupParticipants);
-    group.addMember(c1);
-    group.addMember(c2);
+
+
+
+     unsigned int groupParticipants = 5;
+     std::string baseName = "Team ";
+
+    for (unsigned int  i = 1; i <= 98; i++) {
+
+
+        // Create group name with index
+        std::string groupName = baseName + std::to_string(i);
+
+        // Create and populate the group
+        Group group((groupName.c_str()), groupParticipants, contactContainer, contactContainer);
+        unsigned int messageId1 = id1 + 3*i;
+        Message newMessage1 = Message(messageId1, "Olá o meu nome é Ines Duarte", &admin2);
+        group.getMessages()->addMessage(newMessage1);
+
+        unsigned int messageId2 = id2 + 3*i;
+        Message newMessage2 = Message(messageId2, "Olá o meu nome é Joana Costa",&c1);
+        group.getMessages()->addMessage(newMessage2);
+
+        unsigned int messageId3 = id3 + 3*i;
+        Message newMessage3 = Message(messageId3, "Olá o meu nome é Marco Silva", &c2);
+        group.getMessages()->addMessage(newMessage3);
+
+        // Add to admin and container
+        admin1.addGroup(group);
+        groupChatContainer.addGroup(group);
+
+    }
+
+
+    Group group("Equipa Técnica", groupParticipants, contactContainer, contactContainer);
 
     admin1.addGroup(group);
     groupChatContainer.addGroup(group);
@@ -55,12 +89,6 @@ void addBaseData(App& app) {
     admin1.addNotification(notif);
     notificationContainer.addNotification(notif);
 
-    // === Criar mensagem entre admin1 e contacto ===
-    unsigned int msgId = 201, senderId = id1, receiverId = cid1;
-    Message msg(msgId, "Bom dia, Joana!", "2025-06-12", senderId, receiverId);
-
-    admin1.addMessage(msg);
-    messageContainer.addMessage(msg);
 }
 
 
@@ -76,32 +104,8 @@ int main() {
     App app;
     addBaseData(app);
 
-    std::cout << "== Application Menu ==\n";
-    std::cout << "1. Login as Admin\n";
-    std::cout << "0. Exit\n";
-
-    int option = -1;
-    std::cin >> option;
-    std::cin.ignore(); // limpar buffer
-
-    if (option == 1) {
-        char* passwordInput = nullptr;
-        try {
-            Utils::getString("Enter admin password", passwordInput, 4);
-            if (strcmp(passwordInput, adminPassword) != 0) {
-                throw InvalidDataException("Incorrect admin password.");
-            }
-            delete[] passwordInput;
-            std::cout << "\nLogin successful!\n\n";
-
-            Controller controller(app);
-            controller.run();
-        } catch (InvalidDataException& e) {
-            delete[] passwordInput;
-            std::cout << "\nError: " << e.what() << "\n";
-            return 1;
-        }
-    }
+    Controller controller(app);
+    controller.run();
 
     return 0;
 }

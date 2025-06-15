@@ -1,13 +1,23 @@
 #include "GroupChat.h"
+
+#include <algorithm>
+
 #include "InvalidDataException.h"
 #include "DataConsistencyException.h"
 #include <cstring> // Para strlen, strncpy
 
+#include "ContactContainer.h"
+
 // Construtor
-Group::Group(const char* name, unsigned int& nr_participants) {
+Group::Group(const char* name, unsigned int& nr_participants, ContactContainer *members, ContactContainer* admins):
+    members(members),
+    admins(admins) {
     setName(name);
     setNrParticipants(nr_participants);
+    messages = new MessageContainer();
 }
+
+
 
 // Getters
 const char* Group::getName() const {
@@ -15,15 +25,19 @@ const char* Group::getName() const {
 }
 
 unsigned int Group::getNrParticipants() const {
-    return static_cast<unsigned int>(this->members.size());
+    return static_cast<unsigned int>(this->members->getContactList().size());
 }
 
-std::list<Contact>& Group::getMembers() {
+ContactContainer* Group::getMembers() {
     return this->members;
 }
 
-const std::list<Contact>& Group::getMembers() const {
-    return this->members;
+ContactContainer* Group::getAdmins()  {
+    return this->admins;
+}
+
+ MessageContainer* Group::getMessages()  {
+    return this->messages;
 }
 
 // Setters
@@ -49,29 +63,65 @@ void Group::setNrParticipants(unsigned int& count) {
     // Não altera diretamente — apenas valida.
 }
 
+void Group::setMessages(MessageContainer* messages) {
+    this->messages = messages;
+}
+
+void Group::setMembers(ContactContainer* members) {
+    this->members = members;
+}
+
+
+void Group::setAdmins(ContactContainer* admins) {
+    this->admins = admins;
+}
+
+
 // Membros
 void Group::addMember(const Contact& contact) {
-    for (const auto& member : members) {
+    ContactContainer& membersRef = *members;
+    for (const auto& member : membersRef.getContactList()) {
         if (member.getId() == contact.getId()) {
             throw DataConsistencyException("Contact is already in the group.");
         }
     }
-    members.push_back(contact);
+    members->getContactList().push_back(contact);
 }
 
-void Group::removeMember(const char* contactName) {
-    if (!contactName) {
-        throw InvalidDataException("Invalid pointer to contact name.");
+void Group::addAdmin(const Contact& contact) {
+    ContactContainer& membersRef = *admins;
+    for (const auto& member : membersRef.getContactList()) {
+        if (member.getId() == contact.getId()) {
+            throw DataConsistencyException("Contact is already admin in the group.");
+        }
     }
+    members->getContactList().push_back(contact);
+}
 
-    for (auto it = members.begin(); it != members.end(); ++it) {
-        if (strcmp(it->getName(), contactName) == 0) {
-            members.erase(it);
-            return;
+void Group::removeMember(int contactId) {
+    auto& contactList = members->getContactList();
+    auto it = std::find_if(contactList.begin(), contactList.end(),
+        [contactId](const Contact& c) { return c.getId() == contactId; });
+
+    if (it != contactList.end()) {
+        contactList.erase(it);
+    } else {
+        throw InvalidDataException("That contact is no member of the group");
+    }
+}
+
+
+bool Group::isContactAdmin(const int contactId) {
+
+    bool isAdmin = false;
+
+    for (Contact possibleAdmin : this->admins->getContactList()) {
+        if (possibleAdmin.getId() == contactId) {
+            isAdmin = true;
+            break;
         }
     }
 
-    throw InvalidDataException("Contact with the given name not found in the group.");
+    return isAdmin;
 }
-
 
