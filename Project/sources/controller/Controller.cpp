@@ -150,6 +150,7 @@ void Controller::runChats() {
         } else if (option == 'a') {
             Group group = groupChatView.createGroup(app.getAdminContainer().getAdministratorByID(1), &app.getContactContainer());
             container.addGroup(group);
+
         } else if (option == '-' && currentPage >= 10) {
             currentPage -= 10;
 
@@ -160,7 +161,7 @@ void Controller::runChats() {
             currentPage += 10;
 
         }  else if (option == 'S' && container.getGroupList().size() > 10) {
-            currentPage = container.getGroupList().size() - 1 - 10;
+            currentPage = container.getGroupList().size() - 10;
 
         } else if (option == 'f') {
 
@@ -206,7 +207,7 @@ bool Controller::runChat(Group &chat) {
             currentPage += 10;
 
         }  else if (option == 'S' && chat.getMessages()->getMessages().size() > 10) {
-            currentPage = chat.getMessages()->getMessages().size() - 1 - 10;
+            currentPage = chat.getMessages()->getMessages().size()  - 10;
 
         }  else if ((int)option >= '0' && (int)option <= '9') {
 
@@ -250,7 +251,7 @@ bool Controller::runChatSettings(Group &chat) {
             currentPage += 10;
 
         }  else if (option == 'S' && chat.getMembers()->getContactList().size() > 10) {
-            currentPage = chat.getMembers()->getContactList().size() - 1 - 10;
+            currentPage = chat.getMembers()->getContactList().size()  - 10;
 
         }  else if (chat.isContactAdmin(app.getAdminContainer().getAdministratorByID(1).getId())) {
 

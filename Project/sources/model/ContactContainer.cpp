@@ -185,7 +185,7 @@ void ContactContainer::listContactsPaged(int page , int pageSize) const {
     std::advance(it, startIdx);
 
     for (int i = startIdx; i < endIdx; ++i, ++it) {
-        std::cout << "Contact name: " << it->getName()  << std::endl;
+        std::cout << i << " - " << it->getName()  << std::endl;
     }
 
 }
