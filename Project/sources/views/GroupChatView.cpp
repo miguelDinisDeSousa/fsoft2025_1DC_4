@@ -126,9 +126,6 @@ char GroupChatView::displayChatSettings(Group& currentChat, int currentPage) {
 
 char GroupChatView::addElementsToGroup(ContactContainer * members, int numberOfEles) const {
 
-    std::cout << "\nYou have added\n";
-    members->listContacts();
-
     if (numberOfEles == members->getContactList().size()) {
         const std::vector<char> allowedChars = {
             'y',
@@ -196,11 +193,7 @@ Group GroupChatView::createGroup(Contact& admin, ContactContainer* allContacts) 
         // Display contacts for current page
         for (; it != contactList.end() && displayIndex < CONTACTS_PER_GROUP_CREATION; ++it, ++displayIndex) {
 
-            if (members.existsContactWithID(it->getId())) {
-                std::cout << displayIndex << " - " << it->getName() << " (already added)\n";
-            } else {
-                std::cout << displayIndex << " - " << it->getName() << "\n";
-            }
+            std::cout << displayIndex << " - " << it->getName() << "\n";
         }
 
         // Show current selection status
@@ -241,7 +234,6 @@ Group GroupChatView::createGroup(Contact& admin, ContactContainer* allContacts) 
                 try {
                     if (!members.existsContactWithID(selectedIt->getId())) {
                         members.addContact(*selectedIt);
-                        std::cout << "Added: " << selectedIt->getName() << "\n";
                     } else {
                         std::cout << selectedIt->getName() << " is already a member.\n";
                     }
