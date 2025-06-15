@@ -16,62 +16,6 @@ Administrator::Administrator(unsigned int& id, const char* name, const char* ema
     setAddress(address);
 }
 
-// Getters
-unsigned int Administrator::getId() const {
-    return this->admin_id;
-}
-
-const char* Administrator::getName() const {
-    return this->name;
-}
-
-const char* Administrator::getEmail() const {
-    return this->email;
-}
-
-const char* Administrator::getPhone() const {
-    return this->phone;
-}
-
-const char* Administrator::getAddress() const {
-    return this->address;
-}
-
-// Setters
-void Administrator::setId(unsigned int& id) {
-    this->admin_id = id;
-}
-
-void Administrator::setName(const char* name) {
-    if (!name) throw InvalidDataException("Invalid pointer to name.");
-    size_t len = strlen(name);
-    if (len < 5 || len > ADMIN_MAX_NAME_LEN) {
-        throw DataConsistencyException("Name must be between 5 and 64 characters.");
-    }
-    strncpy(this->name, name, ADMIN_MAX_NAME_LEN);
-    this->name[ADMIN_MAX_NAME_LEN - 1] = '\0';
-}
-
-void Administrator::setEmail(const char* email) {
-    if (!email) throw InvalidDataException("Invalid pointer to email.");
-    size_t len = strlen(email);
-    if (len < 5 || len > ADMIN_MAX_EMAIL_LEN) {
-        throw DataConsistencyException("Email must be between 5 and 64 characters.");
-    }
-    strncpy(this->email, email, ADMIN_MAX_EMAIL_LEN);
-    this->email[ADMIN_MAX_EMAIL_LEN - 1] = '\0';
-}
-
-void Administrator::setPhone(const char* phone) {
-    if (!phone) throw InvalidDataException("Invalid pointer to phone.");
-    size_t len = strlen(phone);
-    if (len < 5 || len > ADMIN_MAX_PHONE_LEN) {
-        throw DataConsistencyException("Phone number must be between 5 and 16 characters.");
-    }
-    strncpy(this->phone, phone, ADMIN_MAX_PHONE_LEN);
-    this->phone[ADMIN_MAX_PHONE_LEN - 1] = '\0';
-}
-
 void Administrator::setAddress(const char* address) {
     if (!address) throw InvalidDataException("Invalid pointer to address.");
     size_t len = strlen(address);
@@ -97,6 +41,10 @@ std::list<Contact>& Administrator::getContacts() {
 
 std::list<Message>& Administrator::getMessages() {
     return this->messages;
+}
+
+const char* Administrator::getAddress() const {
+    return this->address;
 }
 
 // Adders

@@ -1,7 +1,7 @@
 ### CLion-specific files ###
 .idea/
 *.iml
-cmake-build-*/
+/cmake-build-*/
 
 # Prerequisites
 *.d

@@ -17,9 +17,8 @@ int View::AppMenu(bool admin, bool clear) {
                  << "1. Admin Menu\n"
                  << "2. Contact Menu\n"
                  << "3. Group Chat Menu\n"
-                 << "4. Message Menu\n"
-                 << "5. Notification Menu\n"
-                 << "6. Logout\n"
+                 << "4. Notification Menu\n"
+                 << "5. Logout\n"
                  << "0. Exit\n";
             opcao = getNumber("Option");
             first = false;
@@ -86,6 +85,7 @@ int View::ContactMenu(bool clear) {
     return opcao;
 }
 
+/*
 int View::MessageMenu(bool clear) {
     if (clear) clearOutput();
     bool first = true;
@@ -106,6 +106,7 @@ int View::MessageMenu(bool clear) {
 
     return opcao;
 }
+*/
 
 int View::GroupChatMenu(bool clear) {
     if (clear) clearOutput();

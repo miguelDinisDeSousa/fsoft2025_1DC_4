@@ -32,6 +32,10 @@ public:
     bool existsMessageWithID(unsigned int& id);
     Message& getMessageFromID(unsigned int& id);
 
+    bool removeMessageById(unsigned int id, unsigned int ownerId);
+
+    void listMessagesPaged(int page, int pageSize) const;
+
     const std::list<Message>& getMessages() const;
     void setMessages(const std::list<Message>& newMessages);
 };

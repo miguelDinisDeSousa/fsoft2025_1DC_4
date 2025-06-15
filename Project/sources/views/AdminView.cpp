@@ -29,6 +29,7 @@ void AdminView::displayContacts(const std::list<Contact>& contacts) const {
     cout << "====================\n" << endl;
 }
 
+/*
 void AdminView::displayGroups(const std::list<Group>& groups) const {
     cout << "\n=== Group List ===" << endl;
     if (groups.empty()) {
@@ -40,6 +41,7 @@ void AdminView::displayGroups(const std::list<Group>& groups) const {
     }
     cout << "==================\n" << endl;
 }
+*/
 
 void AdminView::createAdmin(AdministratorContainer& container) {
     unsigned int id = Utils::getNumber("Enter ID");

@@ -4,6 +4,7 @@
 #include "Utils.h"
 #include <iostream>
 #include <cstring>
+#include <vector>
 
 using namespace std;
 using namespace Utils;
@@ -66,13 +67,9 @@ void Controller::run() {
                     break;
                 case 4:
                     Utils::clearOutput();
-                    runMessages();
-                    break;
-                case 5:
-                    Utils::clearOutput();
                     runNotifications();
                     break;
-                case 6:
+                case 5:
                     isAdmin = false;
                     Utils::clearOutput();
                     std::cout << "\nLogged out.\n";
@@ -95,7 +92,11 @@ void Controller::runContacts() {
         switch (option) {
             case 1: {
                 Contact contact = contactsView.getContact();
-                container.addContact(contact);
+                try {
+                    container.addContact(contact);
+                } catch (DuplicatedDataException e) {
+                    std::cout << e.what();
+                }
                 break;
             }
             case 2: {
@@ -140,56 +141,155 @@ void Controller::runAdmin() {
 
 void Controller::runChats() {
     GroupChatContainer& container = app.getGroupChatContainer();
-    int option;
-    while ((option = view.GroupChatMenu()) != 0) {
-        switch (option) {
-            case 1: {
-                Group group = groupChatView.getGroup();
-                container.addGroup(group);
-                break;
+    int currentPage = 0;
+    while (true) {
+        char option = groupChatView.displayChats(container, currentPage);
+
+        if (option == 'm') {
+            return;
+        } else if (option == 'a') {
+            Group group = groupChatView.createGroup(app.getAdminContainer().getAdministratorByID(1), &app.getContactContainer());
+            container.addGroup(group);
+
+        } else if (option == '-' && currentPage >= 10) {
+            currentPage -= 10;
+
+        } else if (option == '-' || option == 's') {
+            currentPage = 0;
+
+        } else if (option == '+') {
+            currentPage += 10;
+
+        }  else if (option == 'S' && container.getGroupList().size() > 10) {
+            currentPage = container.getGroupList().size() - 10;
+
+        } else if (option == 'f') {
+
+            char* chatName = nullptr;
+            Utils::getString("Write Group name:", chatName, 0);
+            if (container.existsGroupWithName(chatName)) {
+                Group searchedGroup = container.getGroupByName(chatName);
+                Controller::runChat(searchedGroup);
+            } else {
+                std::cout << "No Group by that name \n";
             }
-            case 2: {
-                Group group = groupChatView.getGroup();
-                container.removeGroup(group, FILTER_NAME);
-                break;
+
+
+        } else if ((int)option >= '0' && (int)option <= '9') {
+            int optionInt = (int) option - '0';
+            std::vector<Group> chats(container.getGroupList().begin(), container.getGroupList().end());
+            Group selectedGroup = chats[optionInt + currentPage];
+            bool goBackMainMenu = Controller::runChat(selectedGroup);
+            if (goBackMainMenu) {
+                return;
             }
-            case 3: {
-                container.listGroups();
-                std::cout << "\nPress Enter to continue...";
-                std::cin.ignore();
-                std::cin.get();
-                break;
-            }
-            default:
-                break;
         }
     }
 }
 
-void Controller::runMessages() {
-    MessageContainer& container = app.getMessageContainer();
-    int option;
-    while ((option = view.MessageMenu()) != 0) {
-        switch (option) {
-            case 1: {
-                Message message = messageView.getMessageInput();
-                container.addMessage(message);
-                break;
+
+bool Controller::runChat(Group &chat) {
+    int currentPage = 0;
+    while (true) {
+        char option = GroupChatView::displayChat(chat, currentPage);
+
+        if (option == 'b') {
+            return false;
+        } else if (option == 'm') {
+            return true;
+        } else if (option == '-' && currentPage >= 10) {
+            currentPage -= 10;
+
+        } else if (option == '-' || option == 's') {
+            currentPage = 0;
+
+        } else if (option == '+') {
+            currentPage += 10;
+
+        }  else if (option == 'S' && chat.getMessages()->getMessages().size() > 10) {
+            currentPage = chat.getMessages()->getMessages().size()  - 10;
+
+        }  else if ((int)option >= '0' && (int)option <= '9') {
+
+            int optionInt = (int) option - '0';
+            std::vector<Message> messages(chat.getMessages()->getMessages().begin(), chat.getMessages()->getMessages().end());
+            chat.getMessages()->removeMessageById(messages[optionInt + currentPage].getId(), 1);
+
+        } else if (option == 'e') {
+            bool goBackMainMenu = Controller::runChatSettings(chat);
+            if (goBackMainMenu) {
+                return true;
             }
-            case 2: {
-                Message message = messageView.getMessageInput();
-                container.removeMessage(message, FILTER_ID);
-                break;
+        } else if (option == 'N') {
+            char* messageText = nullptr;
+            Utils::getString("Write your Message:", messageText, 3);
+            unsigned int newMessageId = app.getMessageContainer().getMessageList().size() + 1;
+            Message *newMessage = new Message(newMessageId, messageText,
+                                              &app.getAdminContainer().getAdministratorByID(1));
+            chat.getMessages()->addMessage(*newMessage);
+            app.getMessageContainer().addMessage(*newMessage);
+        }
+    }
+}
+
+bool Controller::runChatSettings(Group &chat) {
+    int currentPage = 0;
+    while (true) {
+        char option = groupChatView.displayChatSettings(chat, currentPage);
+
+        if (option == 'b') {
+            return false;
+        } else if (option == 'm') {
+            return true;
+        } else if (option == '-' && currentPage >= 10) {
+            currentPage -= 10;
+
+        } else if (option == '-' || option == 's') {
+            currentPage = 0;
+
+        } else if (option == '+') {
+            currentPage += 10;
+
+        }  else if (option == 'S' && chat.getMembers()->getContactList().size() > 10) {
+            currentPage = chat.getMembers()->getContactList().size()  - 10;
+
+        }  else if (chat.isContactAdmin(app.getAdminContainer().getAdministratorByID(1).getId())) {
+
+            if ((int)option >= '0' && (int)option <= '9') {
+
+                int optionInt = (int) option - '0';
+                std::vector<Contact> members(chat.getMembers()->getContactList().begin(), chat.getMembers()->getContactList().end());
+                chat.removeMember(members[optionInt + currentPage].getId());
+            } else if (option == 'e') {
+                char * name;
+                Utils::getString("Enter name of admin to add", name,3);
+                try {
+                    Contact newContact = app.getContactContainer().getContactFromName(name);
+                    chat.addMember(newContact);
+                    chat.addAdmin(newContact);
+                } catch (InvalidDataException e) {
+                    std::cout << e.what();
+                }
+
+            }   else if (option == 'a') {
+                char * name;
+                Utils::getString("Enter name of member to add", name,3);
+                try {
+                    Contact newContact = app.getContactContainer().getContactFromName(name);
+                    chat.getMembers()->addContact(newContact);
+                } catch (InvalidDataException e) {
+                    std::cout << e.what();
+                }
+
+            } else if (option == 'n') {
+                char * newGroupName;
+                Utils::getString("Enter new name for the group", newGroupName,3);
+                chat.setName(newGroupName);
             }
-            case 3: {
-                container.listMessages();
-                std::cout << "\nPress Enter to continue...";
-                std::cin.ignore();
-                std::cin.get();
-                break;
-            }
-            default:
-                break;
+
+        } else if ((option== 'n' || option == 'e' || option == 'a' || ((int)option >= '0' && (int)option <= '9'))
+            && !chat.isContactAdmin(app.getAdminContainer().getAdministratorByID(1).getId())) {
+            std::cout << "\n \n WARNING: You do not have admin privileges";
         }
     }
 }
