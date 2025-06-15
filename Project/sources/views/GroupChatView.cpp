@@ -12,6 +12,8 @@
 
 #define CHATS_PER_PAGE 10
 #define MESSAGES_PER_PAGE 10
+#define CONTACTS_PER_GROUP_CREATION  10
+#define MEMBERS_PER_PAGE  10
 
 char GroupChatView::displayChats(GroupChatContainer& container, int currentPage) const {
     std::cout << "#### Chats Menu ###\n\n";
@@ -72,19 +74,8 @@ char GroupChatView::displayChat(Group & currentChat, int currentPage) {
     };
     std::cout << "#### " << currentChat.getName() << " ####\n\n";
 
-    std::vector<Message> messages(currentChat.getMessages()->getMessages().begin(), currentChat.getMessages()->getMessages().end());
-
-    int start = currentPage ;
-    int end = std::min(start + MESSAGES_PER_PAGE, static_cast<int>(messages.size()));
-
-    for (int i = start; i < end; i++) {
-
-        char timeBuf[100];
-        std::strftime(timeBuf, sizeof(timeBuf), "%H:%M", messages[i].getDate());
-        std::cout << (i - currentPage) << " - " << messages[i].getSender()->getName() << "[" << timeBuf << "] " << ": " << messages[i].getContent() << "\n";
-
-    }
-
+    MessageContainer *messages = currentChat.getMessages();
+    messages->listMessagesPaged(currentPage, MESSAGES_PER_PAGE);
 
     std::cout << "\n \n Pick one option: \n";
     std::cout << "b - Go back to Chats Menu\n";
@@ -101,98 +92,184 @@ char GroupChatView::displayChat(Group & currentChat, int currentPage) {
 }
 
 char GroupChatView::displayChatSettings(Group& currentChat, int currentPage) {
-    const std::vector<char> allowedChars = {
-        'b',
-        'm',
-        '0','1','2','3','4','5','6','7','8','9',
-        '+',
-        '-',
-        's',
-        'S',
-        'n',
-        'a',
-        'e'
-    };
 
-    std::cout << "#### Chat Settings ###\n";
-
-    // Display members
-    std::cout << "Members:\n";
-    std::vector<Contact> members(currentChat.getMembers()->getContactList().begin(), currentChat.getMembers()->getContactList().end());
-    int start = currentPage;
-    int end = std::min(start + CHATS_PER_PAGE, static_cast<int>(members.size()));
-
-
-    for (int i = start; i < end; ++i) {
-        std::cout << (i - start) << " - " << members[i].getName();
-        if (currentChat.isContactAdmin(members[i].getId())) {
-            std::cout << " (admin)";
-        }
-        std::cout << "\n";
+    if (currentChat.getMembers()->getContactList().empty()) {
+        std::cout << "No members in this group.\n";
+        return 'b'; // Go back
     }
 
-    std::cout << "\nPick one option:\n";
-    std::cout << "b- Go back to chat\n";
-    std::cout << "m - Go back to main Menu\n";
-    std::cout << "+ - Go to next 10 members\n";
-    std::cout << "- - Go to previous 10 members\n";
-    std::cout << "s - Go to start of the list\n";
-    std::cout << "S - Go to end of the list\n";
-    std::cout << "0-9 - Remove member (admin)\n";
-    std::cout << "n - Change group name (admin)\n";
-    std::cout << "a - add member (admin)\n";
-    std::cout << "e - Add admin members (admin)\n";
+    const std::vector<char> allowedChars = {'b', 'm','0','1','2','3','4','5','6','7','8','9','+', '-', 's', 'S','n', 'a', 'e'};
+    ContactContainer *members = currentChat.getMembers();
 
+
+    std::cout <<"#### Chat Settings ###\n\n";
+
+    members->listContactsPaged(currentPage, CONTACTS_PER_GROUP_CREATION);
+
+    // Show options
+    std::cout << "\nPick one option:\n";
+    std::cout << "b - Back to chat\n";
+    std::cout << "m - Main Menu\n";
+    std::cout << "+ - Next 10 members\n";
+    std::cout << "- - Previous 10 members\n";
+    std::cout << "s - Start of list\n";
+    std::cout << "S - End of list\n";
+    std::cout << "0-9 - Remove member\n";
+    std::cout << "n - Change group name\n";
+    std::cout << "a - Add member\n";
+    std::cout << "e - Add admin\n";
 
     return Utils::getCharIfAllowed(allowedChars);
+
 }
 
 
-/*
-void GroupChatView::displayGroups(const std::list<Group>& groups) const {
-    if (groups.empty()) {
-        std::cout << "No groups available.\n";
-        return;
-    }
+char GroupChatView::addElementsToGroup(ContactContainer * members, int numberOfEles) const {
 
-    std::cout << "\nList of Groups:\n";
-    for (const auto& group : groups) {
-        std::cout << "Group Name: " << group.getName()
-                  << " | Participants: " << group.getNrParticipants() << "\n";
+    std::cout << "\nYou have added\n";
+    members->listContacts();
+
+    if (numberOfEles == members->getContactList().size()) {
+        const std::vector<char> allowedChars = {
+            'y',
+            'N',
+        };
+        std::cout << "\nPick one option:\n";
+        std::cout << "You have reached the max occupancy of this group\n";
+        std::cout << "y - Confirm Members Added\n";
+        std::cout << "N - Cancel Members Added\n";
+
+        return Utils::getCharIfAllowed(allowedChars);
+
+    } else {
+        const std::vector<char> allowedChars = {
+            'y',
+            'N',
+            '0','1','2','3','4','5','6','7','8','9',
+            '+',
+            '-',
+            's',
+            'S'
+        };
+
+        std::cout << "\nPick one option:\n";
+        std::cout << "y - Confirm Members Added\n";
+        std::cout << "N - Cancel Members Added\n";
+        std::cout << "+ - Go to next 10 contacts\n";
+        std::cout << "- - Go to previous 10 contacts\n";
+        std::cout << "s - Go to start of the contact list\n";
+        std::cout << "S - Go to end of the contact list\n";
+        std::cout << "0-9 - Add Contact to the Group\n";
+
+        return Utils::getCharIfAllowed(allowedChars);
     }
 }
 
-void GroupChatView::displayGroupMembers(const Group& group) const {
-    const auto& members = group.getMembers();
-    if (members.empty()) {
-        std::cout << "This group has no members.\n";
-        return;
-    }
-
-    std::cout << "\nMembers of group '" << group.getName() << "':\n";
-    for (const auto& member : members) {
-        std::cout << "- " << member.getName() << " | Email: " << member.getEmail()
-                  << " | Phone: " << member.getPhone() << "\n";
-    }
-}
-*/
-
-Group GroupChatView::getGroup(Contact& admin) const {
+Group GroupChatView::createGroup(Contact& admin, ContactContainer* allContacts) const {
+    // Get group name
     char* name;
     Utils::getString("Enter group name", name, 3);
 
-    unsigned int count = static_cast<unsigned int>(Utils::getNumber("Enter number of participants"));
-    ContactContainer members;
-    Group *group;
-    members.addContact(admin);
-    try {
-        group = new Group(name, count, &members, &members);
+    // Get participant count
+    unsigned int count = static_cast<unsigned int>(Utils::getNumber("Enter number of participants (including admin)"));
 
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+    // Create containers for members and admins
+    ContactContainer members;
+    ContactContainer admins;
+
+    // Always add admin as first member and admin
+    members.addContact(admin);
+    admins.addContact(admin);
+
+    int currentPage = 0;
+    bool creationConfirmed = false;
+
+    while (!creationConfirmed) {
+        // Display current page of contacts
+        std::cout << "\n--- Select Members (Page " << (currentPage/CONTACTS_PER_GROUP_CREATION + 1) << ") ---\n";
+
+        int displayIndex = 0;
+        auto contactList = allContacts->getContactList();
+        auto it = contactList.begin();
+        std::advance(it, currentPage);
+
+        // Display contacts for current page
+        for (; it != contactList.end() && displayIndex < CONTACTS_PER_GROUP_CREATION; ++it, ++displayIndex) {
+
+            if (members.existsContactWithID(it->getId())) {
+                std::cout << displayIndex << " - " << it->getName() << " (already added)\n";
+            } else {
+                std::cout << displayIndex << " - " << it->getName() << "\n";
+            }
+        }
+
+        // Show current selection status
+        std::cout << "\nCurrent members (" << members.getContactList().size() << "/" << count << "):\n";
+        for (const auto& member : members.getContactList()) {
+            std::cout << "  " << member.getName() << "\n";
+        }
+
+        // Get user input
+        char optionChar = addElementsToGroup(&members, count);
+
+        // Handle navigation
+        if (optionChar == '-' && currentPage >= CONTACTS_PER_GROUP_CREATION) {
+            currentPage -= CONTACTS_PER_GROUP_CREATION;
+        }
+        else if (optionChar == 's') {
+            currentPage = 0;
+        }
+        else if (optionChar == '+') {
+            if (currentPage + CONTACTS_PER_GROUP_CREATION < contactList.size()) {
+                currentPage += CONTACTS_PER_GROUP_CREATION;
+            }
+        }
+        else if (optionChar == 'S') {
+            currentPage = contactList.size() - (contactList.size() % CONTACTS_PER_GROUP_CREATION);
+            if (currentPage == contactList.size()) {
+                currentPage -= CONTACTS_PER_GROUP_CREATION;
+            }
+        }
+        // Handle member selection
+        else if (optionChar >= '0' && optionChar <= '9') {
+            int selectedIndex = currentPage + (optionChar - '0');
+
+            if (selectedIndex < contactList.size()) {
+                auto selectedIt = contactList.begin();
+                std::advance(selectedIt, selectedIndex);
+
+                try {
+                    if (!members.existsContactWithID(selectedIt->getId())) {
+                        members.addContact(*selectedIt);
+                        std::cout << "Added: " << selectedIt->getName() << "\n";
+                    } else {
+                        std::cout << selectedIt->getName() << " is already a member.\n";
+                    }
+                } catch ( DuplicatedDataException& e) {
+                    std::cout << e.what() << "\n";
+                }
+            } else {
+                std::cout << "Invalid selection!\n";
+            }
+        }
+        // Handle confirmation
+        else if (optionChar == 'y') {
+            if (members.getContactList().size() >= 2) { // At least admin + 1 member
+                creationConfirmed = true;
+            } else {
+                std::cout << "You need at least 1 member besides the admin.\n";
+            }
+        }
+        // Handle cancellation
+        else if (optionChar == 'N') {
+            delete[] name;
+            throw std::runtime_error("Group creation cancelled");
+        }
     }
 
-    delete[] name;
-    return *group;
-}
 
+    Group group(name, count, members, admins);
+    delete[] name;
+
+    return group;
+}

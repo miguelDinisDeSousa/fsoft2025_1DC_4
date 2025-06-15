@@ -17,6 +17,8 @@ Group::Group(const char* name, unsigned int& nr_participants, ContactContainer *
     messages = new MessageContainer();
 }
 
+
+
 // Getters
 const char* Group::getName() const {
     return this->name;

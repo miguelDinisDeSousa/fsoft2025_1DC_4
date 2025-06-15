@@ -4,6 +4,7 @@
 #include "MessageContainer.h"
 
 #include <algorithm>
+#include <ctime>
 
 #include "Message.h"
 
@@ -132,4 +133,34 @@ bool MessageContainer::removeMessageById(unsigned int id, unsigned int ownerId) 
 
     }
     return false;
+}
+
+
+void MessageContainer::listMessagesPaged(int page , int pageSize) const {
+    if (messages.empty()) {
+        std::cout << "No messages available.\n";
+        return;
+    }
+
+    int totalPages = (messages.size() + pageSize - 1) / pageSize;
+    page = std::max(1, std::min(page, totalPages)); // Clamp to valid range
+    int startIdx = (page - 1) * pageSize;
+    int endIdx = std::min(startIdx + pageSize, static_cast<int>(messages.size()));
+
+    std::cout << "--- Messages (Page " << page << "/" << totalPages << ") ---\n";
+
+
+    auto it = messages.begin();
+    std::advance(it, startIdx);
+
+    for (int i = startIdx; i < endIdx; ++i, ++it) {
+        char timeBuf[100];
+        std::strftime(timeBuf, sizeof(timeBuf), "%H:%M", it->getDate());
+
+        std::cout << (i % pageSize) << ". "
+                  << (it->getSender() ? it->getSender()->getName() : "[Unknown]")
+                  << " (" << timeBuf << "): "
+                  << it->getContent() << "\n";
+    }
+
 }

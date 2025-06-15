@@ -148,7 +148,7 @@ void Controller::runChats() {
         if (option == 'm') {
             return;
         } else if (option == 'a') {
-            Group group = groupChatView.getGroup(app.getAdminContainer().getAdministratorByID(1));
+            Group group = groupChatView.createGroup(app.getAdminContainer().getAdministratorByID(1), &app.getContactContainer());
             container.addGroup(group);
         } else if (option == '-' && currentPage >= 10) {
             currentPage -= 10;

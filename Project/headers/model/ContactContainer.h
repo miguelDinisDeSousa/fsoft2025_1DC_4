@@ -16,7 +16,10 @@ private:
     unsigned int biggestID = 0;
 
 public:
-    void addContact(Contact& contact);
+    void addContact(Contact &contact);
+
+    void addContactForGroup(Contact &contact);
+
     int removeContact(Contact& contact, FilterType filter);
     void listContacts();
     bool isContactUnique(Contact& contact);
@@ -29,6 +32,10 @@ public:
     Contact& getContactFromID(unsigned int& id);
 
     Contact &getContactFromName(const char *name);
+
+    void listContactsPaged(int page, int pageSize) const;
+
+    bool existsContactWithID(unsigned int id);
 };
 
 #endif //FSOFT2025_1DC_4_CONTACTCONTAINER_H

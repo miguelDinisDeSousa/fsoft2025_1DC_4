@@ -16,9 +16,11 @@ public:
 
     char displayChatSettings(Group &currentChat, int currentPage);
 
+    char addElementsToGroup(ContactContainer *members, int numberOfEles) const;
+
     void displayGroups(const std::list<Group>& groups) const;
     void displayGroupMembers(const Group& group) const;
-    Group getGroup(Contact &admin) const;
+    Group createGroup(Contact &admin, ContactContainer *allContacts) const;
 
 };
 

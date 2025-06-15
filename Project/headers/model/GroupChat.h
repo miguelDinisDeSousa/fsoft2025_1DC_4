@@ -17,6 +17,19 @@ public:
     Group() = default;
     Group(const char *name, unsigned int &nr_participants, ContactContainer *members, ContactContainer *admins);
 
+    Group(const std::string& name, unsigned int nr_participants,
+         const ContactContainer& members, const ContactContainer& admins) {
+        this->members = new ContactContainer(members);
+        this->admins = new ContactContainer(admins);
+        this->messages = new MessageContainer();
+
+
+        setName(name.c_str());
+        setNrParticipants(nr_participants);
+    }
+
+
+
     // Getters
     const char* getName() const;
     unsigned int getNrParticipants() const;
